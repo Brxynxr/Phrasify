@@ -82,3 +82,4 @@ proyect/
 
 ### Módulo 0 — Cimientos compartidos
 * **Fase 1**: Estructura del monorepo (`frontend/`, `backend/`), inicialización de Vite + Tailwind CSS v4, inicialización de FastAPI y README inicial.
+* **Fase 2**: Migración y mejora del scraper de `main.ipynb` a un script reutilizable de Python ([extractor_citas.py](file:///home/bmanga/Escritorio/proyect/backend/extractor_citas.py)), corrigiendo el bug de la paginación y agregando la extracción dinámica de etiquetas (tags).
