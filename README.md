@@ -9,6 +9,8 @@ Resonancia es una SPA (Single Page Application) que reúne 3 retos técnicos ind
 ```text
 proyect/
 ├── backend/                  # Servidor de API en FastAPI (Python)
+│   ├── datos/               # Directorio de almacenamiento de datos
+│   │   └── citas_maestro.xlsx # Dataset maestro procesado
 │   ├── servidor.py          # Punto de entrada de FastAPI
 │   └── requirements.txt     # Dependencias de Python
 ├── frontend/                 # Aplicación de interfaz de usuario en React (Vite)
@@ -83,3 +85,4 @@ proyect/
 ### Módulo 0 — Cimientos compartidos
 * **Fase 1**: Estructura del monorepo (`frontend/`, `backend/`), inicialización de Vite + Tailwind CSS v4, inicialización de FastAPI y README inicial.
 * **Fase 2**: Migración y mejora del scraper de `main.ipynb` a un script reutilizable de Python ([extractor_citas.py](file:///home/bmanga/Escritorio/proyect/backend/extractor_citas.py)), corrigiendo el bug de la paginación y agregando la extracción dinámica de etiquetas (tags).
+* **Fase 3**: Procesamiento de los datos obtenidos y exportación en formato de hoja de cálculo mediante pandas en el dataset maestro ([citas_maestro.xlsx](file:///home/bmanga/Escritorio/proyect/backend/datos/citas_maestro.xlsx)). Definiendo rutas relativas en [generar_dataset.py](file:///home/bmanga/Escritorio/proyect/backend/generar_dataset.py) para su consistencia.
