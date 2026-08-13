@@ -1,0 +1,21 @@
+# Dependencias y compilados de Node
+node_modules/
+dist/
+dist-ssr/
+*.log
+
+# Entornos virtuales y caché de Python
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Archivos de configuración de editores y SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
