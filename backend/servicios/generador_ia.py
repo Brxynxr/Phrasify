@@ -58,7 +58,7 @@ El fracaso no es el fin del camino,"""
     if proveedor == "ollama":
         url_ollama = os.environ.get("OLLAMA_API_URL", "http://127.0.0.1:11434").rstrip("/")
         endpoint = f"{url_ollama}/api/generate"
-        modelo = os.environ.get("OLLAMA_MODEL", "qwen2:0.5b")
+        modelo = os.environ.get("OLLAMA_MODEL", "qwen2.5:3b")
         
         # qwen2.5:3b puede seguir instrucciones directas — un solo prompt bien estructurado es suficiente.
         # Usamos num_thread:12 para aprovechar todos los núcleos del i5-1235U (~2x de velocidad).

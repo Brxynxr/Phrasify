@@ -191,7 +191,7 @@ export default function Tribuna() {
           <p className="text-sm text-slate-300 leading-relaxed">{ensayoTextoVisible}</p>
           {citasUtilizadas.length > 0 && (
             <div className="mt-2">
-              <p className="text-xs text-slate-500 mb-3">Las citas más cercanas encontradas (por debajo del umbral {umbral.toFixed(2)}):</p>
+              <p className="text-xs text-slate-500 mb-3">Las citas más cercanas encontradas (por debajo del umbral 0.30):</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {citasUtilizadas.map((c, i) => (
                   <div key={i} className="bg-slate-950/40 border border-slate-900 rounded-xl p-4 flex flex-col gap-2">
