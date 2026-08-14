@@ -77,18 +77,3 @@ proyect/
    ```bash
    npm run dev
    ```
-
----
-
-## 📜 Historial de Cambios / Fases
-
-### Módulo 0 — Cimientos compartidos
-* **Fase 1**: Estructura del monorepo (`frontend/`, `backend/`), inicialización de Vite + Tailwind CSS v4, inicialización de FastAPI y README inicial.
-* **Fase 2**: Migración y mejora del scraper de `main.ipynb` a un script reutilizable de Python ([extractor_citas.py](file:///home/bmanga/Escritorio/proyect/backend/extractor_citas.py)), corrigiendo el bug de la paginación y agregando la extracción dinámica de etiquetas (tags).
-* **Fase 3**: Procesamiento de los datos obtenidos y exportación en formato de hoja de cálculo mediante pandas en el dataset maestro ([citas_maestro.xlsx](file:///home/bmanga/Escritorio/proyect/backend/datos/citas_maestro.xlsx)). Definiendo rutas relativas en [generar_dataset.py](file:///home/bmanga/Escritorio/proyect/backend/generar_dataset.py) para su consistencia.
-* **Fase 4**: Diseño e implementación del Shell de Navegación de la SPA ([App.jsx](file:///home/bmanga/Escritorio/proyect/frontend/src/App.jsx)), creando las vistas contenedoras iniciales ([Espejo.jsx](file:///home/bmanga/Escritorio/proyect/frontend/src/componentes/Espejo.jsx), [Tribuna.jsx](file:///home/bmanga/Escritorio/proyect/frontend/src/componentes/Tribuna.jsx), [Bitacora.jsx](file:///home/bmanga/Escritorio/proyect/frontend/src/componentes/Bitacora.jsx)) e integrando tipografía y estilos consistentes en Tailwind CSS v4.
-* **Fase 5**: Implementación de la estructura base de la API en FastAPI, organizando enrutadores independientes en [backend/rutas/](file:///home/bmanga/Escritorio/proyect/backend/rutas/) (`espejo.py`, `tribuna.py`, `bitacora.py`), e integrando la carga asíncrona del dataset en memoria al arranque del servidor con [cargador_datos.py](file:///home/bmanga/Escritorio/proyect/backend/cargador_datos.py).
-
-### Módulo 1 — Espejo (Buscador de Vibras)
-* **Fase 1**: Creación del script [generar_embeddings.py](file:///home/bmanga/Escritorio/proyect/backend/generar_embeddings.py) usando el modelo multilingüe `paraphrase-multilingual-MiniLM-L12-v2` para calcular los vectores de las 100 citas, y actualización de [cargador_datos.py](file:///home/bmanga/Escritorio/proyect/backend/cargador_datos.py) para cargar o auto-generar la caché [citas_embeddings.npy](file:///home/bmanga/Escritorio/proyect/backend/datos/citas_embeddings.npy) en memoria global.
-* **Fase 2**: Desarrollo del servicio de búsqueda semántica en [buscador_semantico.py](file:///home/bmanga/Escritorio/proyect/backend/servicios/buscador_semantico.py), implementando el cálculo vectorial de similitud coseno con numpy en microsegundos y habilitando la búsqueda libre en español.
