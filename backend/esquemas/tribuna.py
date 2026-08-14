@@ -1,22 +1,16 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List
 
 class EntradaDebate(BaseModel):
     """
     Contrato de datos de entrada para formular una pregunta al orador en Tribuna.
-    Valida la longitud mínima de la pregunta y permite ajustar el umbral de relevancia.
+    Valida la longitud mínima de la pregunta.
     """
     pregunta: str = Field(
         ...,
         min_length=5,
         description="La pregunta filosófica o tema sobre el cual se desea generar un argumento.",
         examples=["¿Es el fracaso indispensable para alcanzar el éxito?", "¿Qué significa ser feliz?"]
-    )
-    umbral: Optional[float] = Field(
-        default=0.42,
-        ge=0.0,
-        le=1.0,
-        description="Umbral de similitud coseno mínimo (entre 0 y 1) para aceptar citas como sustento."
     )
 
 class CitaSoporte(BaseModel):
@@ -37,11 +31,11 @@ class SalidaDebate(BaseModel):
     """
     suficientes_fuentes: bool = Field(
         ...,
-        description="Indica si se encontraron fuentes válidas que superen el umbral."
+        description="Indica si se encontraron fuentes válidas."
     )
     ensayo: str = Field(
         ...,
-        description="Mini-ensayo redactado por IA citando fuentes reales, o mensaje explicativo del fallback."
+        description="Mini-ensayo redactado por IA citando fuentes reales, o mensaje de error."
     )
     citas_utilizadas: List[CitaSoporte] = Field(
         ...,

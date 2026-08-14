@@ -26,16 +26,14 @@ def verificar_modulo_tribuna():
 @enrutador_tribuna.post("/debatir", response_model=SalidaDebate)
 async def debatir_tema_filosofico(datos_debate: EntradaDebate):
     """
-    Recibe una pregunta o dilema ético, evalúa si existen citas relevantes
-    dentro del dataset maestro (según el umbral de similitud) y, si es el caso,
-    llama al modelo generador de IA para redactar un ensayo de 2 párrafos
-    citando estrictamente las fuentes reales recuperadas.
+    Recibe una pregunta o dilema ético, recupera las citas semánticas más afines,
+    y llama al modelo generador de IA para redactar un ensayo argumentativo
+    citando estrictamente las fuentes del dataset maestro.
     """
     try:
-        # Llamar al orquestador asíncrono del módulo Tribuna
+        # Llamar al orquestador asíncrono simplificado sin filtro de umbral
         resultado = await generar_debate_respaldado(
-            pregunta=datos_debate.pregunta,
-            umbral=datos_debate.umbral
+            pregunta=datos_debate.pregunta
         )
         return resultado
     except Exception as e:
