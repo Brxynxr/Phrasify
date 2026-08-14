@@ -91,3 +91,4 @@ proyect/
 
 ### Módulo 1 — Espejo (Buscador de Vibras)
 * **Fase 1**: Creación del script [generar_embeddings.py](file:///home/bmanga/Escritorio/proyect/backend/generar_embeddings.py) usando el modelo multilingüe `paraphrase-multilingual-MiniLM-L12-v2` para calcular los vectores de las 100 citas, y actualización de [cargador_datos.py](file:///home/bmanga/Escritorio/proyect/backend/cargador_datos.py) para cargar o auto-generar la caché [citas_embeddings.npy](file:///home/bmanga/Escritorio/proyect/backend/datos/citas_embeddings.npy) en memoria global.
+* **Fase 2**: Desarrollo del servicio de búsqueda semántica en [buscador_semantico.py](file:///home/bmanga/Escritorio/proyect/backend/servicios/buscador_semantico.py), implementando el cálculo vectorial de similitud coseno con numpy en microsegundos y habilitando la búsqueda libre en español.
