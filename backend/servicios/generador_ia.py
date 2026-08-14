@@ -44,49 +44,85 @@ async def generar_ensayo_ia(pregunta: str, citas_relevantes: list) -> str:
     cita_texto = primera_cita["frase"]
     cita_autor = primera_cita["autor"]
         
-    # 2. Prompt refinado que aprovecha las 3 citas pero ancla la cita literal en el párrafo 2
-    prompt = f"""
-Escribe una reflexión filosófica de exactamente dos párrafos en español respondiendo a la idea: "{pregunta}"
+    # 2. Prompt ultra-estructurado tipo plantilla para modelos pequeños (evita bucles)
+    otras_ideas = ""
+    for c in citas_relevantes[1:]:
+        otras_ideas += f"- {c['autor']}: \"{c['frase']}\"\n"
 
-Sustento documental disponible:
-{citas_contexto}
-Estructura de dos párrafos (escribe el texto de corrido, sin títulos):
-- Primer párrafo: Desarrolla una reflexión directa y profunda sobre el dilema, comenzando con una afirmación fuerte. Puedes apoyarte en las ideas de cualquiera de los autores de las fuentes, pero sin citar textualmente.
-- Segundo párrafo: Escribe literalmente: Como dijo {cita_autor}, "{cita_texto}". Luego explica en español cómo esta frase da sentido y cierre a tu argumento.
+    prompt = f"""Escribe exactamente DOS párrafos en español sobre: "{pregunta}"
 
-Reglas:
-- Copia "{cita_texto}" exacta, en inglés, entre comillas en el segundo párrafo.
-- NO agregues preámbulos, títulos ni etiquetas de sección.
-- Ve directo al grano desde la primera oración.
-"""
+PÁRRAFO 1 (reflexión directa, 3-4 oraciones, tercera persona, sin citar textualmente):
+El fracaso no es el fin del camino,"""
 
     # 3. Consumo de Ollama usando el cliente HTTP global reutilizable
     if proveedor == "ollama":
         url_ollama = os.environ.get("OLLAMA_API_URL", "http://127.0.0.1:11434").rstrip("/")
         endpoint = f"{url_ollama}/api/generate"
-        modelo = os.environ.get("OLLAMA_MODEL", "qwen2.5:7b")
+        modelo = os.environ.get("OLLAMA_MODEL", "qwen2:0.5b")
         
-        payload = {
+        # Estrategia "gap-fill": pre-rellenar ambos inicios de párrafo.
+        # Para modelos ≤1B, completar huecos es mucho más fiable que generar libremente.
+        # El modelo SOLO tiene que extender las dos oraciones que ya iniciamos.
+        prompt_completo = f"""Continúa el siguiente ensayo filosófico en español. No cambies lo que ya está escrito. Escribe solo la continuación de cada párrafo. No agregues títulos ni introducciones.
+
+---
+Pregunta: {pregunta}
+
+Párrafo 1 — Reflexión (continúa desde aquí, 2-3 oraciones, sin usar primera persona):
+El fracaso repetido no define el límite de una persona, sino"""
+
+        # Llamamos a Ollama para obtener la continuación del párrafo 1
+        payload_p1 = {
             "model": modelo,
-            "prompt": prompt,
+            "prompt": prompt_completo,
             "stream": False,
             "options": {
-                "temperature": 0.3,
-                "repeat_penalty": 1.2,
-                "presence_penalty": 0.6,
-                "frequency_penalty": 0.6,
-                "num_predict": 300,
-                "stop": ["\n\n\n", "["]
+                "temperature": 0.45,
+                "repeat_penalty": 1.4,
+                "repeat_last_n": 64,
+                "num_predict": 110,
+                "stop": ["\n\n", "Párrafo 2", "Como dijo", "---", "Pregunta:"]
             }
         }
-        
-        print(f"Generador IA: Realizando consulta a Ollama (Modelo: {modelo})...")
-        
+
+        print(f"Generador IA: Realizando consulta a Ollama (Modelo: {modelo}) — Párrafo 1...")
+
         try:
-            respuesta = await cliente_http_global.post(endpoint, json=payload, timeout=180.0)
-            respuesta.raise_for_status()
-            datos_respuesta = respuesta.json()
-            return datos_respuesta.get("response", "").strip()
+            resp_p1 = await cliente_http_global.post(endpoint, json=payload_p1, timeout=180.0)
+            resp_p1.raise_for_status()
+            continuacion_p1 = resp_p1.json().get("response", "").strip()
+
+            # Párrafo 2: ancla fija con la cita real, el modelo solo completa la explicación
+            cita_limpia = cita_texto.rstrip(".")
+            inicio_p2 = f'Como dijo {cita_autor}, "{cita_limpia}." Esta cita'
+            prompt_p2 = f"""{prompt_completo} {continuacion_p1}
+
+Párrafo 2 — Cierre con la cita (continúa desde aquí, 2-3 oraciones):
+{inicio_p2}"""
+
+            payload_p2 = {
+                "model": modelo,
+                "prompt": prompt_p2,
+                "stream": False,
+                "options": {
+                    "temperature": 0.45,
+                    "repeat_penalty": 1.4,
+                    "repeat_last_n": 64,
+                    "num_predict": 110,
+                    "stop": ["\n\n", "Párrafo 3", "---", "Pregunta:"]
+                }
+            }
+
+            print(f"Generador IA: Realizando consulta a Ollama (Modelo: {modelo}) — Párrafo 2...")
+            resp_p2 = await cliente_http_global.post(endpoint, json=payload_p2, timeout=180.0)
+            resp_p2.raise_for_status()
+            continuacion_p2 = resp_p2.json().get("response", "").strip()
+
+            # Ensamblar el ensayo final con los dos párrafos
+            parrafo_1 = f"El fracaso repetido no define el límite de una persona, sino {continuacion_p1}".strip()
+            parrafo_2 = f"{inicio_p2} {continuacion_p2}".strip()
+            return f"{parrafo_1}\n\n{parrafo_2}"
+
         except Exception as e:
             raise RuntimeError(f"Error al conectar con la API local de Ollama: {e}")
             
