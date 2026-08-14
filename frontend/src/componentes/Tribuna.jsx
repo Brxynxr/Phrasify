@@ -189,22 +189,6 @@ export default function Tribuna() {
             <h3 className="text-sm font-bold text-amber-400">Sin fuentes suficientes para debatir</h3>
           </div>
           <p className="text-sm text-slate-300 leading-relaxed">{ensayoTextoVisible}</p>
-          {citasUtilizadas.length > 0 && (
-            <div className="mt-2">
-              <p className="text-xs text-slate-500 mb-3">Las citas más cercanas encontradas (por debajo del umbral 0.30):</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {citasUtilizadas.map((c, i) => (
-                  <div key={i} className="bg-slate-950/40 border border-slate-900 rounded-xl p-4 flex flex-col gap-2">
-                    <p className="text-xs text-slate-400 italic">"{c.frase}"</p>
-                    <div className="flex items-center justify-between border-t border-slate-900 pt-2">
-                      <span className="text-xs text-amber-400 font-bold">— {c.autor}</span>
-                      <span className="text-[10px] text-slate-500 font-mono">Afinidad: {(c.similitud * 100).toFixed(0)}%</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       )}
 

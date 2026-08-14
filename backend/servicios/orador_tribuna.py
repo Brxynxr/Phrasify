@@ -54,7 +54,7 @@ async def generar_debate_respaldado(pregunta: str, umbral: float = 0.42) -> dict
         resultado = {
             "suficientes_fuentes": False,
             "ensayo": mensaje_fallback,
-            "citas_utilizadas": citas_candidatas  # Mostramos las candidatas aunque no alcancen el umbral
+            "citas_utilizadas": []  # No mostramos citas por debajo del umbral
         }
         _cache_debates[clave_cache] = resultado
         return resultado
