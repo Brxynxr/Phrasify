@@ -35,24 +35,33 @@ async def generar_ensayo_ia(pregunta: str, citas_relevantes: list) -> str:
     """
     proveedor = os.environ.get("PROVEEDOR_IA", "gemini").lower()
     
-    # 1. Obtener la cita más relevante para inyectar directamente en las instrucciones
+    # 1. Obtener la cita más relevante e inyectar sus metadatos (tags) como heurística
     primera_cita = citas_relevantes[0]
     cita_texto = primera_cita["frase"]
     cita_autor = primera_cita["autor"]
+    cita_tags = ", ".join(primera_cita["tags"])
     
-    # 2. Construir el prompt estructurado como plantilla para el modelo 0.5B
+    # 2. Construir el prompt heurístico multilingüe para el modelo 0.5B
     prompt = f"""
-Escribe un mini-ensayo en español respondiendo a esta pregunta: "{pregunta}"
+Task: Write a two-paragraph response arguing about the user's question: "{pregunta}"
 
-Sigue exactamente esta estructura de dos párrafos:
+INSTRUCCIÓN DE IDIOMA (MANDATORIA):
+Debes responder en el mismo idioma en el que está escrita la pregunta (si la pregunta está en español, responde en español; si está en inglés, responde en inglés).
 
-Párrafo 1: Escribe una reflexión o argumento filosófico en español respondiendo a la pregunta.
-Párrafo 2: Escribe de forma literal: Como dijo {cita_autor}, "{cita_texto}". Y explica en español cómo se relaciona esta frase con tu reflexión.
+Soporte documental a integrar (Obligatorio):
+- Cita literal: "{cita_texto}"
+- Autor: {cita_autor}
+- Relación conceptual (Palabras clave): {cita_tags}
+
+Estructura de dos párrafos:
+Párrafo 1: Desarrolla un argumento o reflexión que responda a la pregunta, guiándote por la relación conceptual ({cita_tags}).
+Párrafo 2: Introduce la cita textualmente y atribúyela a su autor. Explica detalladamente cómo respalda tu punto.
+- En español usa: Como dijo {cita_autor}, "{cita_texto}".
+- En inglés usa: As {cita_autor} said, "{cita_texto}".
 
 Reglas:
-- Escribe exactamente dos párrafos.
-- No agregues introducciones, ni títulos, ni despedidas.
-- Debes escribir la frase "{cita_texto}" exacta y entre comillas.
+- Responde estrictamente con el ensayo de dos párrafos. No agregues preámbulos, saludos, títulos ni despedidas.
+- Copia la cita literal "{cita_texto}" exacta y entre comillas.
 """
 
     # 3. Consumo de APIs según el proveedor configurado
