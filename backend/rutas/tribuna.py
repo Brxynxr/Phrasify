@@ -12,8 +12,7 @@ enrutador_tribuna = APIRouter(
 @enrutador_tribuna.get("/")
 def verificar_modulo_tribuna():
     """
-    Ruta básica de verificación para confirmar que el módulo Tribuna está en funcionamiento
-    y puede acceder al dataset de citas compartido.
+    Ruta básica de verificación para confirmar que el módulo Tribuna está en funcionamiento.
     """
     citas = obtener_citas()
     return {
@@ -26,14 +25,15 @@ def verificar_modulo_tribuna():
 @enrutador_tribuna.post("/debatir", response_model=SalidaDebate)
 async def debatir_tema_filosofico(datos_debate: EntradaDebate):
     """
-    Recibe una pregunta o dilema ético, recupera las citas semánticas más afines,
-    y llama al modelo generador de IA para redactar un ensayo argumentativo
-    citando estrictamente las fuentes del dataset maestro.
+    Recibe una pregunta o dilema ético y un umbral de rigor configurable.
+    Recupera las citas semánticas más afines, verifica que superen el umbral
+    (anti-alucinaciones), y llama al LLM para redactar el ensayo argumentativo.
+    Si no hay fuentes con suficiente afinidad, devuelve un fallback honesto.
     """
     try:
-        # Llamar al orquestador asíncrono simplificado sin filtro de umbral
         resultado = await generar_debate_respaldado(
-            pregunta=datos_debate.pregunta
+            pregunta=datos_debate.pregunta,
+            umbral=datos_debate.umbral
         )
         return resultado
     except Exception as e:

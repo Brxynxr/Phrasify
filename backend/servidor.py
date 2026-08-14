@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from cargador_datos import cargar_dataset_maestro
+from servicios.buscador_semantico import obtener_modelo
+from servicios.cliente_http import cerrar_cliente_http
 from rutas.espejo import enrutador_espejo
 from rutas.tribuna import enrutador_tribuna
 from rutas.bitacora import enrutador_bitacora
@@ -16,15 +18,23 @@ from rutas.bitacora import enrutador_bitacora
 async def lifespan(app: FastAPI):
     """
     Context Manager para el ciclo de vida de la aplicación FastAPI.
-    Controla el arranque cargando el dataset en memoria y la limpieza al apagar el servidor.
+    Al arrancar:
+      1. Carga el dataset maestro (.xlsx) y embeddings en memoria.
+      2. Pre-carga el modelo SentenceTransformer para que la primera
+         consulta del usuario sea tan rápida como las siguientes.
+    Al apagar:
+      3. Cierra el cliente HTTP global reutilizable.
     """
     try:
-        # Cargar el dataset maestro compartido (.xlsx) en memoria al iniciar
         cargar_dataset_maestro()
+        print("Servidor: Pre-cargando modelo de embeddings en memoria...")
+        obtener_modelo()
+        print("Servidor: Modelo de embeddings listo.")
     except Exception as e:
-        print(f"ERROR CRÍTICO: No se pudo cargar el dataset maestro al iniciar el servidor: {e}")
+        print(f"ERROR CRÍTICO durante el arranque del servidor: {e}")
     yield
-    # Acciones de apagado si fuesen necesarias (limpieza de caché, cerrar sockets, etc.)
+    # Apagado limpio: cerrar el pool de conexiones HTTP
+    await cerrar_cliente_http()
     print("Servidor apagándose...")
 
 # Inicialización de la aplicación FastAPI asociando el ciclo de vida lifespan
