@@ -27,17 +27,17 @@ proyect/
 
 ## 🚀 Módulos del Proyecto
 
-1. **Buscador de Vibras (Módulo 1)**:
+1. **Espejo (Módulo 1 — Buscador de Vibras)**:
    - Búsqueda semántica de citas basada en emociones o situaciones abstractas sin keyword matching directo.
-   - Generación de embeddings utilizando `sentence-transformers` y cálculo de similitud coseno.
+   - Refleja tu emoción en forma de cita ajena. Genera embeddings utilizando `sentence-transformers` y calcula similitud coseno.
    
-2. **Orador de Debates Respaldado (Módulo 2)**:
+2. **Tribuna (Módulo 2 — Orador de Debates Respaldado)**:
    - Generación de mini-ensayos filosóficos apoyados por IA (Gemini/Ollama) utilizando citas textuales del dataset como base.
-   - Restricción de contenido para evitar la invención de fuentes si no se alcanzan umbrales mínimos de relevancia.
+   - El espacio para argumentar con fuentes reales sin invención ni alucinación de referencias.
 
-3. **Optimizador de Presupuesto y Empaquetado (Módulo 3)**:
+3. **Bitácora (Módulo 3 — Optimizador de Presupuesto y Empaquetado)**:
    - Agrupación óptima de frases en lotes (bin-packing) respetando un límite estricto de tokens.
-   - Simulación de peticiones y generación de un "recibo" de consumo detallado.
+   - Registro de consumo simulado y desglose de tokens utilizados y lotes formados.
 
 ---
 

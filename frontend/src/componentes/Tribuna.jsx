@@ -1,10 +1,10 @@
 import React from 'react';
 
 /**
- * Componente del Módulo 2: Orador de Debates Respaldado.
- * Permite realizar preguntas filosóficas y ver los ensayos generados basados en citas reales.
+ * Componente del Módulo 2: Tribuna.
+ * Ofrece el espacio donde se argumentan mini-ensayos con respaldo de fuentes reales.
  */
-export default function OradorDebates() {
+export default function Tribuna() {
   return (
     <div className="w-full max-w-4xl mx-auto bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-8 shadow-2xl animate-fade-in">
       <div className="flex items-center gap-4 mb-6">
@@ -14,20 +14,20 @@ export default function OradorDebates() {
           </svg>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-slate-100 tracking-wide">Orador de Debates</h2>
-          <p className="text-sm text-slate-400">Generación de mini-ensayos respaldados en fuentes reales del dataset.</p>
+          <h2 className="text-2xl font-bold text-slate-100 tracking-wide">Tribuna</h2>
+          <p className="text-sm text-slate-400">Orador de Debates: Discursos argumentados basados estrictamente en citas reales.</p>
         </div>
       </div>
 
       <div className="border border-dashed border-slate-800 rounded-xl p-12 text-center">
         <p className="text-slate-400 mb-6 max-w-md mx-auto">
-          Escribe una pregunta compleja o dilema ético para recibir un ensayo argumentativo respaldado rigurosamente por citas exactas extraídas de nuestro dataset maestro.
+          Expón una tesis o pregunta de debate. Tribuna construirá una respuesta argumentada que cita textualmente autores célebres del dataset maestro, garantizando la veracidad de las fuentes y evitando alucinaciones.
         </p>
 
-        {/* Simulación de interfaz del orador */}
+        {/* Simulación de interfaz */}
         <div className="max-w-md mx-auto flex flex-col gap-3">
           <textarea 
-            placeholder="Ej: ¿Qué papel juega la perseverancia ante el fracaso?"
+            placeholder="Ej: ¿Es el fracaso indispensable para alcanzar el éxito?"
             disabled
             rows="2"
             className="w-full bg-slate-950/50 border border-slate-800 rounded-lg p-3 text-sm text-slate-500 placeholder-slate-600 focus:outline-none cursor-not-allowed resize-none"
@@ -36,7 +36,7 @@ export default function OradorDebates() {
             disabled 
             className="bg-indigo-600/50 text-indigo-300 font-medium py-2.5 rounded-lg text-sm cursor-not-allowed"
           >
-            Preguntar al Orador
+            Subir a la Tribuna
           </button>
         </div>
       </div>

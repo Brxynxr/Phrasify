@@ -1,10 +1,11 @@
 import React from 'react';
 
 /**
- * Componente del Módulo 1: Buscador de Vibras.
- * Ofrece la interfaz para realizar búsquedas semánticas de citas.
+ * Componente del Módulo 1: Espejo.
+ * Ofrece la interfaz para realizar búsquedas semánticas de citas (Buscador de Vibras).
+ * Refleja tu emoción en forma de cita ajena, sin que compartan ni una palabra.
  */
-export default function BuscadorVibras() {
+export default function Espejo() {
   return (
     <div className="w-full max-w-4xl mx-auto bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-8 shadow-2xl animate-fade-in">
       <div className="flex items-center gap-4 mb-6">
@@ -14,21 +15,21 @@ export default function BuscadorVibras() {
           </svg>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-slate-100 tracking-wide">Buscador de Vibras</h2>
-          <p className="text-sm text-slate-400">Búsqueda semántica por emoción o situación conceptual.</p>
+          <h2 className="text-2xl font-bold text-slate-100 tracking-wide">Espejo</h2>
+          <p className="text-sm text-slate-400">Buscador de Vibras: Refleja tu emoción en citas afines.</p>
         </div>
       </div>
 
       <div className="border border-dashed border-slate-800 rounded-xl p-12 text-center">
         <p className="text-slate-400 mb-6 max-w-md mx-auto">
-          Este módulo procesa tu entrada de texto libre y busca las frases con mayor afinidad conceptual sin realizar coincidencia de palabras clave.
+          Escribe tu situación actual, emoción o pensamiento. Este módulo te devolverá citas que reflejen exactamente tu estado de ánimo mediante similitud semántica, sin coincidencia literal de palabras.
         </p>
         
-        {/* Simulación de interfaz del buscador */}
+        {/* Simulación de interfaz de búsqueda */}
         <div className="max-w-md mx-auto flex gap-3">
           <input 
             type="text" 
-            placeholder="Ej: Me siento melancólico un domingo por la tarde..."
+            placeholder="Ej: Me siento nostálgico recordando viejos tiempos..."
             disabled
             className="flex-1 bg-slate-950/50 border border-slate-800 rounded-lg px-4 py-2.5 text-sm text-slate-500 placeholder-slate-600 focus:outline-none cursor-not-allowed"
           />
@@ -36,7 +37,7 @@ export default function BuscadorVibras() {
             disabled 
             className="bg-violet-600/50 text-violet-300 font-medium px-5 py-2.5 rounded-lg text-sm cursor-not-allowed"
           >
-            Buscar
+            Reflejar
           </button>
         </div>
       </div>

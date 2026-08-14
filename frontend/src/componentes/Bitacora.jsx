@@ -1,10 +1,10 @@
 import React from 'react';
 
 /**
- * Componente del Módulo 3: Optimizador de Presupuesto y Empaquetado.
- * Permite configurar límites de tokens y simular el bin-packing del dataset.
+ * Componente del Módulo 3: Bitácora.
+ * Ofrece la interfaz para configurar y analizar la optimización de lotes y el recibo de tokens.
  */
-export default function OptimizadorLotes() {
+export default function Bitacora() {
   return (
     <div className="w-full max-w-4xl mx-auto bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-8 shadow-2xl animate-fade-in">
       <div className="flex items-center gap-4 mb-6">
@@ -14,17 +14,17 @@ export default function OptimizadorLotes() {
           </svg>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-slate-100 tracking-wide">Optimizador de Lotes</h2>
-          <p className="text-sm text-slate-400">Algoritmo de bin-packing para empaquetamiento óptimo de frases por límites de tokens.</p>
+          <h2 className="text-2xl font-bold text-slate-100 tracking-wide">Bitácora</h2>
+          <p className="text-sm text-slate-400">Optimizador de Lotes: Registro de empaquetado y cálculo exacto de consumo de tokens.</p>
         </div>
       </div>
 
       <div className="border border-dashed border-slate-800 rounded-xl p-12 text-center">
         <p className="text-slate-400 mb-6 max-w-md mx-auto">
-          Configura un límite de tokens por lote y ejecuta el algoritmo para ordenar, agrupar y simular el procesamiento de todo el dataset maestro, estimando costos y número de peticiones.
+          Establece un límite de tokens. Bitácora organizará el dataset usando algoritmos de bin-packing y generará un recibo descriptivo del total de lotes, peticiones de red simuladas y consumo detallado de recursos.
         </p>
 
-        {/* Simulación de interfaz del optimizador */}
+        {/* Simulación de interfaz */}
         <div className="max-w-md mx-auto flex items-center justify-center gap-4">
           <div className="flex items-center gap-2">
             <label className="text-sm text-slate-500">Límite de Tokens:</label>
@@ -39,7 +39,7 @@ export default function OptimizadorLotes() {
             disabled 
             className="bg-emerald-600/50 text-emerald-300 font-medium px-5 py-2.5 rounded-lg text-sm cursor-not-allowed"
           >
-            Optimizar Lotes
+            Generar Bitácora
           </button>
         </div>
       </div>

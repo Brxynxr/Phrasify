@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import BuscadorVibras from './componentes/BuscadorVibras';
-import OradorDebates from './componentes/OradorDebates';
-import OptimizadorLotes from './componentes/OptimizadorLotes';
+import Espejo from './componentes/Espejo';
+import Tribuna from './componentes/Tribuna';
+import Bitacora from './componentes/Bitacora';
 
 /**
  * Componente Principal de la SPA "Resonancia".
@@ -10,19 +10,19 @@ import OptimizadorLotes from './componentes/OptimizadorLotes';
  */
 function App() {
   // Estado para controlar la pestaña o módulo activo
-  const [moduloActivo, setModuloActivo] = useState('buscador');
+  const [moduloActivo, setModuloActivo] = useState('espejo');
 
   // Función para renderizar el componente dinámicamente según el estado del enrutador
   const renderizarModulo = () => {
     switch (moduloActivo) {
-      case 'buscador':
-        return <BuscadorVibras />;
-      case 'orador':
-        return <OradorDebates />;
-      case 'optimizador':
-        return <OptimizadorLotes />;
+      case 'espejo':
+        return <Espejo />;
+      case 'tribuna':
+        return <Tribuna />;
+      case 'bitacora':
+        return <Bitacora />;
       default:
-        return <BuscadorVibras />;
+        return <Espejo />;
     }
   };
 
@@ -34,7 +34,7 @@ function App() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           
           {/* Logotipo del proyecto con efecto de pulsación brillante */}
-          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => setModuloActivo('buscador')}>
+          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => setModuloActivo('espejo')}>
             <div className="w-3.5 h-3.5 bg-gradient-to-tr from-violet-500 to-indigo-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.6)]"></div>
             <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 to-slate-300 bg-clip-text text-transparent">
               Resonancia
@@ -44,47 +44,47 @@ function App() {
           {/* Menú de pestañas de navegación */}
           <nav className="flex items-center gap-2">
             
-            {/* Botón Buscador de Vibras */}
+            {/* Botón Espejo (Módulo 1) */}
             <button
-              onClick={() => setModuloActivo('buscador')}
+              onClick={() => setModuloActivo('espejo')}
               className={`relative px-4 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
-                moduloActivo === 'buscador'
+                moduloActivo === 'espejo'
                   ? 'bg-violet-500/10 border border-violet-500/30 text-violet-400'
                   : 'border border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
               }`}
             >
-              Buscador
-              {moduloActivo === 'buscador' && (
+              Espejo
+              {moduloActivo === 'espejo' && (
                 <span className="absolute -bottom-[17px] left-0 right-0 h-[2px] bg-violet-500 shadow-[0_0_8px_#8b5cf6]"></span>
               )}
             </button>
 
-            {/* Botón Orador de Debates */}
+            {/* Botón Tribuna (Módulo 2) */}
             <button
-              onClick={() => setModuloActivo('orador')}
+              onClick={() => setModuloActivo('tribuna')}
               className={`relative px-4 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
-                moduloActivo === 'orador'
+                moduloActivo === 'tribuna'
                   ? 'bg-indigo-500/10 border border-indigo-500/30 text-indigo-400'
                   : 'border border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
               }`}
             >
-              Orador
-              {moduloActivo === 'orador' && (
+              Tribuna
+              {moduloActivo === 'tribuna' && (
                 <span className="absolute -bottom-[17px] left-0 right-0 h-[2px] bg-indigo-500 shadow-[0_0_8px_#6366f1]"></span>
               )}
             </button>
 
-            {/* Botón Optimizador de Lotes */}
+            {/* Botón Bitácora (Módulo 3) */}
             <button
-              onClick={() => setModuloActivo('optimizador')}
+              onClick={() => setModuloActivo('bitacora')}
               className={`relative px-4 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
-                moduloActivo === 'optimizador'
+                moduloActivo === 'bitacora'
                   ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
                   : 'border border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
               }`}
             >
-              Lotes
-              {moduloActivo === 'optimizador' && (
+              Bitácora
+              {moduloActivo === 'bitacora' && (
                 <span className="absolute -bottom-[17px] left-0 right-0 h-[2px] bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
               )}
             </button>
@@ -104,9 +104,9 @@ function App() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>Resonancia &copy; 2026. Todos los derechos reservados.</p>
           <div className="flex gap-4">
-            <span className="hover:text-slate-400 transition-colors">Buscador de Vibras</span>
-            <span className="hover:text-slate-400 transition-colors">Orador de Debates</span>
-            <span className="hover:text-slate-400 transition-colors">Optimizador</span>
+            <span className="hover:text-slate-400 transition-colors">Espejo</span>
+            <span className="hover:text-slate-400 transition-colors">Tribuna</span>
+            <span className="hover:text-slate-400 transition-colors">Bitácora</span>
           </div>
         </div>
       </footer>
