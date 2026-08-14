@@ -60,69 +60,49 @@ El fracaso no es el fin del camino,"""
         endpoint = f"{url_ollama}/api/generate"
         modelo = os.environ.get("OLLAMA_MODEL", "qwen2:0.5b")
         
-        # Estrategia "gap-fill": pre-rellenar ambos inicios de párrafo.
-        # Para modelos ≤1B, completar huecos es mucho más fiable que generar libremente.
-        # El modelo SOLO tiene que extender las dos oraciones que ya iniciamos.
-        prompt_completo = f"""Continúa el siguiente ensayo filosófico en español. No cambies lo que ya está escrito. Escribe solo la continuación de cada párrafo. No agregues títulos ni introducciones.
+        # qwen2.5:3b puede seguir instrucciones directas — un solo prompt bien estructurado es suficiente.
+        # Usamos num_thread:12 para aprovechar todos los núcleos del i5-1235U (~2x de velocidad).
+        cita_limpia = cita_texto.rstrip(".")
+        otras_citas_txt = ""
+        for c in citas_relevantes[1:]:
+            otras_citas_txt += f'  • {c["autor"]}: "{c["frase"]}"\n'
 
----
-Pregunta: {pregunta}
+        prompt_completo = f"""Eres un ensayista filosófico. Escribe EXACTAMENTE DOS párrafos en español. Nada más.
 
-Párrafo 1 — Reflexión (continúa desde aquí, 2-3 oraciones, sin usar primera persona):
-El fracaso repetido no define el límite de una persona, sino"""
+PREGUNTA: {pregunta}
 
-        # Llamamos a Ollama para obtener la continuación del párrafo 1
-        payload_p1 = {
+FUENTES DE APOYO (para el párrafo 1, parafrasea sus ideas sin citarlas):
+{otras_citas_txt.strip()}
+
+ESTRUCTURA OBLIGATORIA:
+Párrafo 1 → Reflexión filosófica directa. Empieza con una afirmación fuerte. Desarrolla el argumento con 3 oraciones. No uses primera persona. No menciones autores ni citas textuales.
+Párrafo 2 → Empieza EXACTAMENTE así (copia esta frase sin cambiarla): Como dijo {cita_autor}, "{cita_limpia}." Luego explica en 2 oraciones cómo esa cita cierra el argumento.
+
+RECUERDA: Solo DOS párrafos. Sin títulos. Sin numeración. Sin un tercer párrafo.
+
+ENSAYO:"""
+
+        payload = {
             "model": modelo,
             "prompt": prompt_completo,
             "stream": False,
             "options": {
-                "temperature": 0.45,
-                "repeat_penalty": 1.4,
-                "repeat_last_n": 64,
-                "num_predict": 110,
-                "stop": ["\n\n", "Párrafo 2", "Como dijo", "---", "Pregunta:"]
+                "temperature": 0.4,
+                "repeat_penalty": 1.3,
+                "repeat_last_n": 128,
+                "num_predict": 280,
+                "num_thread": 12,
+                "stop": ["\n\n\n", "PREGUNTA:", "INSTRUCCIONES:", "ENSAYO:"]
             }
         }
 
-        print(f"Generador IA: Realizando consulta a Ollama (Modelo: {modelo}) — Párrafo 1...")
+        print(f"Generador IA: Consultando Ollama ({modelo}, 12 threads)...")
 
         try:
-            resp_p1 = await cliente_http_global.post(endpoint, json=payload_p1, timeout=180.0)
-            resp_p1.raise_for_status()
-            continuacion_p1 = resp_p1.json().get("response", "").strip()
-
-            # Párrafo 2: ancla fija con la cita real, el modelo solo completa la explicación
-            cita_limpia = cita_texto.rstrip(".")
-            inicio_p2 = f'Como dijo {cita_autor}, "{cita_limpia}." Esta cita'
-            prompt_p2 = f"""{prompt_completo} {continuacion_p1}
-
-Párrafo 2 — Cierre con la cita (continúa desde aquí, 2-3 oraciones):
-{inicio_p2}"""
-
-            payload_p2 = {
-                "model": modelo,
-                "prompt": prompt_p2,
-                "stream": False,
-                "options": {
-                    "temperature": 0.45,
-                    "repeat_penalty": 1.4,
-                    "repeat_last_n": 64,
-                    "num_predict": 110,
-                    "stop": ["\n\n", "Párrafo 3", "---", "Pregunta:"]
-                }
-            }
-
-            print(f"Generador IA: Realizando consulta a Ollama (Modelo: {modelo}) — Párrafo 2...")
-            resp_p2 = await cliente_http_global.post(endpoint, json=payload_p2, timeout=180.0)
-            resp_p2.raise_for_status()
-            continuacion_p2 = resp_p2.json().get("response", "").strip()
-
-            # Ensamblar el ensayo final con los dos párrafos
-            parrafo_1 = f"El fracaso repetido no define el límite de una persona, sino {continuacion_p1}".strip()
-            parrafo_2 = f"{inicio_p2} {continuacion_p2}".strip()
-            return f"{parrafo_1}\n\n{parrafo_2}"
-
+            respuesta = await cliente_http_global.post(endpoint, json=payload, timeout=180.0)
+            respuesta.raise_for_status()
+            texto = respuesta.json().get("response", "").strip()
+            return texto
         except Exception as e:
             raise RuntimeError(f"Error al conectar con la API local de Ollama: {e}")
             
