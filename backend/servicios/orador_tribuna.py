@@ -1,16 +1,17 @@
 import os
 from servicios.recuperador_contexto import recuperar_citas_candidatas
+from servicios.generador_ia import generar_ensayo_ia
 
 # Umbral de relevancia por defecto para similitud coseno
 UMBRAL_RELEVANCIA_DEFECTO = 0.42
 
-def generar_debate_respaldado(pregunta: str, umbral: float = UMBRAL_RELEVANCIA_DEFECTO):
+async def generar_debate_respaldado(pregunta: str, umbral: float = UMBRAL_RELEVANCIA_DEFECTO):
     """
     Orquesta la lógica del Módulo 2: Tribuna.
     1. Recupera las citas candidatas usando el motor semántico de búsqueda.
     2. Aplica un filtro de umbral mínimo de similitud.
     3. Si no hay citas relevantes, activa la respuesta de fallback para evitar alucinaciones.
-    4. Si hay citas relevantes, prepara el contexto para ser enviado al generador IA (Fase 3).
+    4. Si hay citas relevantes, genera el ensayo argumentativo respaldado usando la IA.
     
     Parámetros:
         pregunta (str): Pregunta planteada por el usuario.
@@ -19,8 +20,8 @@ def generar_debate_respaldado(pregunta: str, umbral: float = UMBRAL_RELEVANCIA_D
     Retorna:
         dict: Estructura de debate que contiene:
               - 'suficientes_fuentes' (bool): Si existen datos válidos para argumentar.
-              - 'ensayo' (str o None): El mini-ensayo generado (None en Fase 2, se implementa en Fase 3).
-              - 'citas_utilizadas' (list): Lista de citas que superaron el umbral.
+              - 'ensayo' (str): El mini-ensayo generado o el mensaje de error/fallback.
+              - 'citas_utilizadas' (list): Lista de citas que superaron el umbral y sirvieron de base.
     """
     # 1. Recuperar citas candidatas usando el motor semántico (recupera 5 candidatas)
     citas_candidatas = recuperar_citas_candidatas(pregunta, limite=5)
@@ -46,35 +47,47 @@ def generar_debate_respaldado(pregunta: str, umbral: float = UMBRAL_RELEVANCIA_D
             "citas_utilizadas": []
         }
         
-    # 4. Caso exitoso: hay fuentes. Retornamos los datos limpios.
-    # En la siguiente Fase (Fase 3) conectaremos con el LLM para escribir el ensayo.
-    print(f"Orador Tribuna: Procediendo con {len(citas_relevantes)} fuentes válidas para redactar el ensayo.")
-    return {
-        "suficientes_fuentes": True,
-        "ensayo": None,  # Pendiente de implementar generación por IA en la Fase 3
-        "citas_utilizadas": citas_relevantes
-    }
+    # 4. Caso exitoso: hay fuentes. Procedemos a generar el ensayo con la IA.
+    print(f"Orador Tribuna: Procediendo con {len(citas_relevantes)} fuentes válidas para redactar el ensayo con IA.")
+    try:
+        ensayo_generado = await generar_ensayo_ia(pregunta, citas_relevantes)
+        return {
+            "suficientes_fuentes": True,
+            "ensayo": ensayo_generado,
+            "citas_utilizadas": citas_relevantes
+        }
+    except Exception as e:
+        print(f"Orador Tribuna: Error durante la generación del ensayo con IA: {e}")
+        # En caso de error técnico de la API de IA (ej: falta de llave en .env), retornamos un mensaje amistoso
+        # y adjuntamos las fuentes recuperadas para que el usuario las consulte directamente
+        error_fallback = (
+            f"No se pudo generar el ensayo argumentativo debido a un problema con el servicio de IA ({str(e)}). "
+            "No obstante, a continuación se muestran las fuentes reales encontradas en nuestro dataset maestro."
+        )
+        return {
+            "suficientes_fuentes": True,
+            "ensayo": error_fallback,
+            "citas_utilizadas": citas_relevantes
+        }
 
 if __name__ == "__main__":
     import sys
+    import asyncio
+    
     # Agregar la ruta del backend en el path para testing independiente
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     from cargador_datos import cargar_dataset_maestro
     
-    print("Prueba independiente de Lógica de Umbral y Fallback:")
-    cargar_dataset_maestro()
-    
-    # Caso 1: Pregunta ajena al dataset (debería lanzar fallback)
-    pregunta_ajena = "¿Cómo puedo programar una base de datos relacional usando SQL?"
-    print(f"\n--- Prueba Caso 1: '{pregunta_ajena}' ---")
-    resultado_1 = generar_debate_respaldado(pregunta_ajena)
-    print(f"¿Tiene suficientes fuentes?: {resultado_1['suficientes_fuentes']}")
-    print(f"Ensayo/Mensaje: \"{resultado_1['ensayo']}\"")
-    print(f"Citas utilizadas: {len(resultado_1['citas_utilizadas'])}")
-    
-    # Caso 2: Pregunta relacionada con fracaso/éxito (debería aprobar)
-    pregunta_relacionada = "¿Por qué fracasar es parte del aprendizaje humano?"
-    print(f"\n--- Prueba Caso 2: '{pregunta_relacionada}' ---")
-    resultado_2 = generar_debate_respaldado(pregunta_relacionada)
-    print(f"¿Tiene suficientes fuentes?: {resultado_2['suficientes_fuentes']}")
-    print(f"Citas utilizadas: {[c['autor'] for c in resultado_2['citas_utilizadas']]}")
+    async def prueba_principal():
+        print("Prueba independiente del Orador de Tribuna con Mock de IA...")
+        cargar_dataset_maestro()
+        
+        # Test de fallback
+        res_fallback = await generar_debate_respaldado("¿Cómo se programa una API en Rust?")
+        print(f"\nCaso Fallback:\n¿Suficientes fuentes?: {res_fallback['suficientes_fuentes']}\nEnsayo: {res_fallback['ensayo']}")
+        
+        # Test de éxito
+        res_exito = await generar_debate_respaldado("Háblame sobre la perseverancia ante el fracaso")
+        print(f"\nCaso Éxito (Sin .env de IA configurado, retornará error controlado):\n¿Suficientes fuentes?: {res_exito['suficientes_fuentes']}\nEnsayo: {res_exito['ensayo']}")
+
+    asyncio.run(prueba_principal())
