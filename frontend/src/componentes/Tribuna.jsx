@@ -7,7 +7,6 @@ import React, { useState } from 'react';
  */
 export default function Tribuna() {
   const [preguntaTexto, setPreguntaTexto] = useState('');
-  const [umbral, setUmbral] = useState(0.42);
   const [estaCargando, setEstaCargando] = useState(false);
   const [mensajeCarga, setMensajeCarga] = useState('');
   const [ensayoTextoVisible, setEnsayoTextoVisible] = useState('');
@@ -69,7 +68,7 @@ export default function Tribuna() {
       const respuesta = await fetch('http://localhost:8000/tribuna/debatir', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'accept': 'application/json' },
-        body: JSON.stringify({ pregunta: preguntaTexto, umbral: parseFloat(umbral) })
+        body: JSON.stringify({ pregunta: preguntaTexto, umbral: 0.30 })
       });
 
       if (!respuesta.ok) {
@@ -120,8 +119,7 @@ export default function Tribuna() {
     });
   };
 
-  const nivelRigor = umbral <= 0.32 ? 'Bajo' : umbral <= 0.46 ? 'Medio' : 'Alto';
-  const colorRigor = umbral <= 0.32 ? 'text-amber-400' : umbral <= 0.46 ? 'text-indigo-400' : 'text-emerald-400';
+
 
   return (
     <div className="w-full max-w-4xl mx-auto flex flex-col gap-8 animate-fade-in">
@@ -150,31 +148,7 @@ export default function Tribuna() {
             className="w-full bg-slate-950/40 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all duration-300 resize-none"
           />
 
-          {/* Control de Rigor Semántico */}
-          <div className="flex flex-col gap-2 pt-1">
-            <div className="flex justify-between items-center">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Nivel de Rigor Semántico
-              </label>
-              <span className={`text-xs font-bold ${colorRigor}`}>
-                {nivelRigor} ({umbral.toFixed(2)})
-              </span>
-            </div>
-            <input
-              type="range"
-              min="0.20"
-              max="0.70"
-              step="0.02"
-              value={umbral}
-              onChange={(e) => setUmbral(parseFloat(e.target.value))}
-              disabled={estaCargando}
-              className="w-full accent-indigo-500 cursor-pointer disabled:opacity-50"
-            />
-            <div className="flex justify-between text-[10px] text-slate-600">
-              <span>Permisivo — responde siempre</span>
-              <span>Estricto — admite no saber</span>
-            </div>
-          </div>
+
 
           <div className="flex justify-end border-t border-slate-800/60 pt-4">
             <button
