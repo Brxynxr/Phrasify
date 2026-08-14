@@ -31,17 +31,17 @@
 
 /* Custom Glow Animations and Utility Classes */
 .goth-bg-main {
-  background-image: linear-gradient(to bottom, rgba(12, 2, 2, 0.94), rgba(20, 3, 3, 0.96)), url('/bck.jpg');
+  background-image: linear-gradient(to bottom, rgba(12, 2, 2, 0.72), rgba(20, 3, 3, 0.80)), url('/bck.jpg');
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
 }
 
 .goth-card {
-  background: rgba(12, 2, 2, 0.85);
-  backdrop-filter: blur(12px);
-  border: 2px solid rgba(128, 10, 10, 0.6);
-  box-shadow: 0 0 15px rgba(128, 10, 10, 0.25), inset 0 0 15px rgba(128, 10, 10, 0.15);
+  background: rgba(12, 2, 2, 0.65);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(180, 20, 20, 0.75);
+  box-shadow: 0 0 18px rgba(180, 20, 20, 0.35), inset 0 0 15px rgba(128, 10, 10, 0.25);
 }
 
 .goth-card:hover {
