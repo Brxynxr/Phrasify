@@ -11,11 +11,11 @@ export default function Espejo() {
   const [citasResultados, setCitasResultados] = useState([]);
   const [errorMensaje, setErrorMensaje] = useState('');
 
-  // Simulación de búsqueda semántica con retardo para testing visual (Fase 4)
-  const ejecutarBusquedaMock = (evento) => {
+  // Ejecutar búsqueda semántica llamando a la API de FastAPI (Fase 5)
+  const ejecutarBusqueda = async (evento) => {
     evento.preventDefault();
     
-    // Validación de longitud mínima (coincidiendo con las reglas del backend)
+    // Validación de longitud mínima
     if (consultaTexto.trim().length < 3) {
       setErrorMensaje('Por favor, escribe una situación o emoción de al menos 3 caracteres.');
       return;
@@ -25,32 +25,34 @@ export default function Espejo() {
     setEstaCargando(true);
     setCitasResultados([]);
 
-    // Simular retraso de red de 1.2 segundos para ver el skeleton loader
-    setTimeout(() => {
-      const citasFicticias = [
-        {
-          frase: "I have not failed. I've just found 10,000 ways that won't work.",
-          autor: "Thomas A. Edison",
-          tags: ["edison", "failure", "inspirational", "paraphrased"],
-          similitud: 0.5806
+    try {
+      const respuesta = await fetch('http://localhost:8000/espejo/buscar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'accept': 'application/json'
         },
-        {
-          frase: "It is impossible to live without failing at something, unless you live so cautiously that you might as well not have lived at all - in which case, you fail by default.",
-          autor: "J.K. Rowling",
-          tags: ["failure", "inspirational", "life"],
-          similitud: 0.5296
-        },
-        {
-          frase: "Try not to become a man of success. Rather become a man of value.",
-          autor: "Albert Einstein",
-          tags: ["adulthood", "success", "value"],
-          similitud: 0.4236
-        }
-      ];
+        body: JSON.stringify({
+          consulta: consultaTexto,
+          limite: 3
+        })
+      });
 
-      setCitasResultados(citasFicticias);
+      if (!respuesta.ok) {
+        if (respuesta.status === 422) {
+          throw new Error('La consulta ingresada no cumple con las reglas del servidor (mínimo 3 caracteres).');
+        }
+        throw new Error('Hubo un problema al obtener las citas del servidor. Por favor, inténtalo de nuevo.');
+      }
+
+      const datos = await respuesta.json();
+      setCitasResultados(datos.resultados || []);
+    } catch (error) {
+      console.error('Error en búsqueda semántica:', error);
+      setErrorMensaje(error.message || 'Error de conexión con el servidor. Asegúrate de que el backend está corriendo.');
+    } finally {
       setEstaCargando(false);
-    }, 1200);
+    }
   };
 
   return (
@@ -72,7 +74,7 @@ export default function Espejo() {
         </div>
 
         {/* Formulario de Consulta */}
-        <form onSubmit={ejecutarBusquedaMock} className="flex flex-col gap-3">
+        <form onSubmit={ejecutarBusqueda} className="flex flex-col gap-3">
           <div className="flex flex-col sm:flex-row gap-3">
             <input 
               type="text" 
