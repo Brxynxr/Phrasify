@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 /**
- * Componente del Módulo 2: Tribuna (Simplificado).
+ * Componente del Módulo 2: Tribuna.
  * Ofrece una interfaz para formular preguntas y recibir ensayos respaldados
- * por las citas reales más afines, destacándolas visualmente en el texto.
+ * por las citas reales más afines, simulando un flujo de escritura fluido.
  */
 export default function Tribuna() {
   // Estados reactivos con nomenclatura descriptiva en español
@@ -12,16 +12,37 @@ export default function Tribuna() {
   const [mensajeCarga, setMensajeCarga] = useState('');
   
   const [ensayoTexto, setEnsayoTexto] = useState('');
+  const [ensayoTextoVisible, setEnsayoTextoVisible] = useState(''); // Para el efecto máquina de escribir
   const [citasUtilizadas, setCitasUtilizadas] = useState([]);
   const [errorMensaje, setErrorMensaje] = useState('');
+
+  // Función para simular el tipeado palabra por palabra (Typewriter effect)
+  const iniciarEfectoEscritura = (textoCompleto) => {
+    setEnsayoTextoVisible('');
+    const palabras = textoCompleto.split(' ');
+    let index = 0;
+    let acumulado = '';
+    
+    const intervalo = setInterval(() => {
+      if (index < palabras.length) {
+        acumulado += (index === 0 ? '' : ' ') + palabras[index];
+        setEnsayoTextoVisible(acumulado);
+        index++;
+      } else {
+        clearInterval(intervalo);
+      }
+    }, 45); // 45ms por palabra (tipeado fluido y elegante)
+    
+    return intervalo;
+  };
 
   // Función auxiliar para simular pasos en la carga y dar mejor UX
   const iniciarMensajesCarga = () => {
     const etapas = [
       'Recuperando citas afines del dataset maestro...',
       'Analizando coeficientes de similitud coseno...',
-      'Orquestando ensayo argumentativo en la IA (qwen2.5:1.5b)...',
-      'Resaltando citas literales y verificando atribuciones...'
+      'Orquestando ensayo argumentativo en la IA...',
+      'Trazando flujo lógico y citas en inglés...'
     ];
     
     let etapaActual = 0;
@@ -34,7 +55,7 @@ export default function Tribuna() {
       } else {
         clearInterval(intervalo);
       }
-    }, 1500);
+    }, 1200);
     
     return intervalo;
   };
@@ -51,6 +72,7 @@ export default function Tribuna() {
     setErrorMensaje('');
     setEstaCargando(true);
     setEnsayoTexto('');
+    setEnsayoTextoVisible('');
     setCitasUtilizadas([]);
 
     const intervaloCarga = iniciarMensajesCarga();
@@ -79,10 +101,15 @@ export default function Tribuna() {
       setEnsayoTexto(datos.ensayo);
       setCitasUtilizadas(datos.citas_utilizadas || []);
       
+      // Detener los mensajes de carga y comenzar el efecto de escritura fluida
+      clearInterval(intervaloCarga);
+      setEstaCargando(false);
+      
+      iniciarEfectoEscritura(datos.ensayo);
+      
     } catch (error) {
       console.error('Error al debatir en Tribuna:', error);
       setErrorMensaje(error.message || 'Error de conexión con el servidor.');
-    } finally {
       clearInterval(intervaloCarga);
       setEstaCargando(false);
     }
@@ -175,7 +202,7 @@ export default function Tribuna() {
       )}
 
       {/* Resultados del Debate */}
-      {!estaCargando && ensayoTexto && (
+      {!estaCargando && ensayoTextoVisible && (
         <div className="flex flex-col gap-6">
           
           {/* Tarjeta de Ensayo */}
@@ -189,9 +216,9 @@ export default function Tribuna() {
               Discurso Emitido
             </h3>
             
-            {/* Texto del ensayo con las partes resaltadas */}
-            <div className="text-slate-200 leading-loose text-base flex flex-col gap-6 relative z-10 text-justify">
-              {renderizarEnsayoConResaltado(ensayoTexto)}
+            {/* Texto del ensayo con las partes resaltadas fluyendo */}
+            <div className="text-slate-200 leading-loose text-base flex flex-col gap-6 relative z-10 text-justify font-sans">
+              {renderizarEnsayoConResaltado(ensayoTextoVisible)}
             </div>
           </div>
 
@@ -206,7 +233,7 @@ export default function Tribuna() {
                 {citasUtilizadas.map((c, index) => (
                   <div 
                     key={index}
-                    className="bg-slate-950/40 border border-slate-900 rounded-xl p-5 hover:border-slate-850 transition duration-300 flex flex-col justify-between gap-3"
+                    className="bg-slate-950/40 border border-slate-900 rounded-xl p-5 hover:border-slate-850 transition duration-300 flex flex-col justify-between gap-3 animate-fade-in"
                   >
                     <p className="text-xs text-slate-300 italic leading-relaxed">
                       “{c.frase}”
@@ -229,7 +256,7 @@ export default function Tribuna() {
       )}
 
       {/* Pantalla Informativa Inicial */}
-      {!estaCargando && !ensayoTexto && (
+      {!estaCargando && !ensayoTextoVisible && (
         <div className="text-center py-8 text-slate-500 text-sm">
           Pregunta algo sobre el éxito, fracaso, amor o la vida para activar la oratoria de la Tribuna.
         </div>

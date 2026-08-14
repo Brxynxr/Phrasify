@@ -35,29 +35,24 @@ async def generar_ensayo_ia(pregunta: str, citas_relevantes: list) -> str:
     """
     proveedor = os.environ.get("PROVEEDOR_IA", "gemini").lower()
     
-    # 1. Formatear el listado de citas reales como contexto para la IA
-    citas_contexto = ""
-    for idx, c in enumerate(citas_relevantes, 1):
-        citas_contexto += f"{idx}. \"{c['frase']}\" — Autor: {c['autor']}\n"
-        
-    # 2. Construir el prompt optimizado y simplificado para el modelo local (Few-Shot)
+    # 1. Obtener la cita más relevante para inyectar directamente en las instrucciones
+    primera_cita = citas_relevantes[0]
+    cita_texto = primera_cita["frase"]
+    cita_autor = primera_cita["autor"]
+    
+    # 2. Construir el prompt estructurado como plantilla para el modelo 0.5B
     prompt = f"""
-Instrucción: Escribe un mini-ensayo de exactamente dos párrafos en español respondiendo a la pregunta filosófica del usuario. Es de obligado cumplimiento que incluyas de forma literal (palabra por palabra, entre comillas) al menos una de las citas reales provistas como base de tu argumento y menciones a su autor.
+Escribe un mini-ensayo en español respondiendo a esta pregunta: "{pregunta}"
 
-[EJEMPLO DE REFERENCIA]
-Pregunta: "¿Es bueno equivocarse?"
-Citas:
-1. "I have not failed. I've just found 10,000 ways that won't work." — Autor: Thomas A. Edison
-Respuesta:
-El fracaso no debe ser visto como un obstáculo insuperable, sino como una herramienta valiosa en nuestro aprendizaje humano. Cada intento fallido nos aporta experiencia y conocimiento sobre lo que no funciona, guiándonos hacia la solución.
+Sigue exactamente esta estructura de dos párrafos:
 
-Como dijo Thomas A. Edison, "I have not failed. I've just found 10,000 ways that won't work", el error es en realidad un descubrimiento que pavimenta el camino hacia el éxito final.
+Párrafo 1: Escribe una reflexión o argumento filosófico en español respondiendo a la pregunta.
+Párrafo 2: Escribe de forma literal: Como dijo {cita_autor}, "{cita_texto}". Y explica en español cómo se relaciona esta frase con tu reflexión.
 
-[TU TURNO PARA ESCRIBIR]
-Pregunta: "{pregunta}"
-Citas:
-{citas_contexto}
-Respuesta:
+Reglas:
+- Escribe exactamente dos párrafos.
+- No agregues introducciones, ni títulos, ni despedidas.
+- Debes escribir la frase "{cita_texto}" exacta y entre comillas.
 """
 
     # 3. Consumo de APIs según el proveedor configurado
