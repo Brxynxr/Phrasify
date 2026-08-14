@@ -47,9 +47,8 @@ async def generar_debate_respaldado(pregunta: str, umbral: float = 0.42) -> dict
     # 4. Fallback si no hay fuentes suficientes (cumple el Reto 2)
     if not citas_validas:
         mensaje_fallback = (
-            "No tengo fuentes relevantes en mi base de datos para debatir esta pregunta con rigor. "
-            "Las citas de mi dataset no guardan suficiente relación semántica con tu planteamiento. "
-            "Intenta reformular la pregunta o reduce el nivel de rigor requerido."
+            "No encontré en mi base de citas ninguna fuente con relación directa a esta pregunta, "
+            "así que no puedo argumentar con respaldo real."
         )
         resultado = {
             "suficientes_fuentes": False,

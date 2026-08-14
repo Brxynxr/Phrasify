@@ -2,20 +2,17 @@ import React, { useState } from 'react';
 
 /**
  * Componente del Módulo 1: Espejo (Buscador de Vibras).
- * Interfaz interactiva de búsqueda semántica.
+ * Rediseñado con la estética Gótica-Cyberpunk de la interfaz Liazid Oussama.
  */
 export default function Espejo() {
-  // Estados reactivos con nomenclatura descriptiva en español
   const [consultaTexto, setConsultaTexto] = useState('');
   const [estaCargando, setEstaCargando] = useState(false);
   const [citasResultados, setCitasResultados] = useState([]);
   const [errorMensaje, setErrorMensaje] = useState('');
 
-  // Ejecutar búsqueda semántica llamando a la API de FastAPI (Fase 5)
   const ejecutarBusqueda = async (evento) => {
     evento.preventDefault();
     
-    // Validación de longitud mínima
     if (consultaTexto.trim().length < 3) {
       setErrorMensaje('Por favor, escribe una situación o emoción de al menos 3 caracteres.');
       return;
@@ -58,18 +55,18 @@ export default function Espejo() {
   return (
     <div className="w-full max-w-4xl mx-auto flex flex-col gap-8 animate-fade-in">
       
-      {/* Tarjeta de control de búsqueda */}
-      <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl">
+      {/* Tarjeta de control de búsqueda Gótica */}
+      <div className="goth-card rounded-2xl p-8">
         <div className="flex items-center gap-4 mb-6">
-          <div className="p-3 bg-violet-500/10 border border-violet-500/30 rounded-xl text-violet-400">
-            {/* Icono de Espejo / Ondas Sonoras */}
+          <div className="p-3 bg-[#800a0a]/10 border border-[#800a0a]/40 rounded-xl text-[#e61919] goth-glow-text">
+            {/* Icono de Espejo Gótico */}
             <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
             </svg>
           </div>
           <div>
-            <h2 className="text-2xl font-bold tracking-wide text-slate-100">Espejo</h2>
-            <p className="text-sm text-slate-400">Introduce tu emoción o estado mental para reflejarlo en pensamientos célebres.</p>
+            <h2 className="text-2xl font-gothic tracking-widest text-slate-100 goth-glow-text">ESPEJO</h2>
+            <p className="text-sm text-slate-400 font-serif">Introduce tu emoción o estado mental para reflejarlo en pensamientos célebres.</p>
           </div>
         </div>
 
@@ -80,79 +77,74 @@ export default function Espejo() {
               type="text" 
               value={consultaTexto}
               onChange={(e) => setConsultaTexto(e.target.value)}
-              placeholder="Ej: Me siento abrumado por los retos cotidianos..."
-              className="flex-1 bg-slate-950/40 border border-slate-800 rounded-xl px-5 py-3.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30 transition-all duration-300"
+              placeholder="Ej: Siento que el tiempo vuela y no he logrado mis metas..."
+              className="flex-1 bg-black/80 border-2 border-[#800a0a]/60 rounded-xl px-5 py-3.5 text-sm text-slate-200 placeholder-slate-700 focus:outline-none focus:border-[#e61919] focus:ring-1 focus:ring-[#e61919]/30 transition-all duration-300 font-sans"
             />
             <button 
               type="submit"
               disabled={estaCargando}
-              className="bg-violet-600 hover:bg-violet-500 text-white font-semibold px-8 py-3.5 rounded-xl text-sm transition-all duration-300 shadow-[0_4px_20px_rgba(139,92,246,0.3)] hover:shadow-[0_4px_25px_rgba(139,92,246,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#800a0a] hover:bg-[#e61919] text-white font-serif uppercase tracking-widest font-semibold px-8 py-3.5 rounded-xl text-sm transition-all duration-300 border border-[#e61919]/30 shadow-[0_4px_15px_rgba(128,10,10,0.4)] hover:shadow-[0_4px_20px_rgba(230,25,25,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Reflejar
             </button>
           </div>
           
-          {/* Mensaje de error de validación */}
           {errorMensaje && (
-            <p className="text-xs text-red-400 ml-1 mt-1 font-medium">{errorMensaje}</p>
+            <p className="text-xs text-red-500 font-bold ml-1 mt-1 font-mono">{errorMensaje}</p>
           )}
         </form>
       </div>
 
-      {/* Renderizado Condicional: Skeleton Loader de Carga */}
+      {/* Skeleton Loader de Carga al estilo Gótico */}
       {estaCargando && (
         <div className="grid grid-cols-1 gap-4">
           {[1, 2, 3].map((num) => (
             <div 
               key={num} 
-              className="animate-pulse bg-slate-900/30 border border-slate-850 rounded-2xl p-6 flex flex-col gap-3"
+              className="animate-pulse bg-[#0c0202]/80 border-2 border-[#800a0a]/30 rounded-2xl p-6 flex flex-col gap-3 shadow-[inset_0_0_10px_rgba(128,10,10,0.15)]"
             >
-              <div className="h-5 bg-slate-800/80 rounded-md w-3/4"></div>
-              <div className="h-4 bg-slate-800/50 rounded-md w-1/4"></div>
+              <div className="h-5 bg-[#800a0a]/20 rounded-md w-3/4"></div>
+              <div className="h-4 bg-[#800a0a]/10 rounded-md w-1/4"></div>
               <div className="flex gap-2 mt-2">
-                <div className="h-6 bg-slate-800/40 rounded-full w-16"></div>
-                <div className="h-6 bg-slate-800/40 rounded-full w-20"></div>
+                <div className="h-6 bg-[#800a0a]/10 rounded-full w-16"></div>
+                <div className="h-6 bg-[#800a0a]/10 rounded-full w-20"></div>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Renderizado Condicional: Lista de Resultados */}
+      {/* Resultados de Citas Reflejadas */}
       {!estaCargando && citasResultados.length > 0 && (
         <div className="flex flex-col gap-5">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-violet-400 px-1">
-            Pensamientos Reflejados
+          <h3 className="text-xs font-serif uppercase tracking-widest text-[#e61919] goth-glow-text px-1">
+            ✠ Pensamientos Reflejados ✠
           </h3>
           
           <div className="grid grid-cols-1 gap-5">
             {citasResultados.map((c, indice) => {
-              // Convertir el score de similitud coseno (-1 a 1) en un porcentaje legible
               const afinidadPorcentaje = (c.similitud * 100).toFixed(1);
               
               return (
                 <div 
                   key={indice}
-                  className="bg-slate-900/40 border border-slate-800/80 hover:border-violet-500/40 rounded-2xl p-6 shadow-lg transition-all duration-300 group flex flex-col md:flex-row justify-between gap-4"
+                  className="goth-card rounded-2xl p-6 shadow-lg transition-all duration-300 flex flex-col md:flex-row justify-between gap-4"
                 >
                   <div className="flex-1 flex flex-col gap-3">
-                    {/* Cuerpo de la frase */}
-                    <p className="text-base text-slate-100 italic leading-relaxed font-medium">
-                      “{c.frase}”
+                    <p className="text-base text-slate-100 italic leading-relaxed font-sans">
+                      "{c.frase}"
                     </p>
                     
                     <div className="flex flex-wrap items-center gap-3">
-                      {/* Autor */}
-                      <span className="text-sm text-violet-400 font-bold">
+                      <span className="text-sm text-[#e61919] font-bold font-serif">
                         — {c.autor}
                       </span>
                       
                       <div className="flex flex-wrap gap-1.5">
-                        {/* Etiquetas */}
                         {c.tags.map((tag, tagIdx) => (
                           <span 
                             key={tagIdx} 
-                            className="bg-slate-950/80 text-violet-300/80 border border-violet-950 px-2 py-0.5 rounded-md text-[10px] font-semibold"
+                            className="bg-[#250505] text-slate-300 border border-[#800a0a]/50 px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold"
                           >
                             {tag}
                           </span>
@@ -161,12 +153,12 @@ export default function Espejo() {
                     </div>
                   </div>
 
-                  {/* Indicador de Afinidad Semántica */}
-                  <div className="flex flex-col justify-center items-end shrink-0 border-t md:border-t-0 md:border-l border-slate-800/60 pt-3 md:pt-0 md:pl-6 text-right">
-                    <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">
-                      Afinidad Semántica
+                  {/* Indicador de Afinidad Semántica con círculo brillante */}
+                  <div className="flex flex-col justify-center items-center shrink-0 border-t md:border-t-0 md:border-l border-[#800a0a]/50 pt-3 md:pt-0 md:pl-8 text-center min-w-[120px]">
+                    <span className="text-[10px] text-slate-500 uppercase font-serif tracking-widest mb-1.5 block">
+                      Afinidad
                     </span>
-                    <span className="text-2xl font-extrabold text-violet-400 font-mono">
+                    <span className="text-2xl font-extrabold text-[#e61919] goth-glow-text font-mono">
                       {afinidadPorcentaje}%
                     </span>
                   </div>
@@ -180,8 +172,8 @@ export default function Espejo() {
 
       {/* Mensaje Informativo Inicial */}
       {!estaCargando && citasResultados.length === 0 && (
-        <div className="text-center py-8 text-slate-500 text-sm">
-          Ingresa una vibración o emoción arriba para reflejarla en la citas célebres.
+        <div className="text-center py-12 text-slate-600 font-serif tracking-widest text-sm bg-black/40 border border-[#800a0a]/20 rounded-2xl">
+          ✠ Ingresa tu sentir en la barra para reflejarlo en las citas célebres ✠
         </div>
       )}
 

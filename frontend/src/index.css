@@ -1,5 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Almendra:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-sans: 'Outfit', sans-serif;
+  --font-gothic: 'MedievalSharp', cursive;
+  --font-serif: 'Almendra', serif;
+  
+  --color-goth-black: #0c0202;
+  --color-goth-maroon: #250505;
+  --color-goth-red: #800a0a;
+  --color-goth-bright: #e61919;
+  --color-goth-accent: #9a4dff;
+}
+
+/* Custom Gothic Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0c0202;
+}
+::-webkit-scrollbar-thumb {
+  background: #800a0a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e61919;
+}
+
+/* Custom Glow Animations and Utility Classes */
+.goth-bg-main {
+  background-image: linear-gradient(to bottom, rgba(12, 2, 2, 0.94), rgba(20, 3, 3, 0.96)), url('/bck.jpg');
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+.goth-card {
+  background: rgba(12, 2, 2, 0.85);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(128, 10, 10, 0.6);
+  box-shadow: 0 0 15px rgba(128, 10, 10, 0.25), inset 0 0 15px rgba(128, 10, 10, 0.15);
+}
+
+.goth-card:hover {
+  border-color: rgba(230, 25, 25, 0.8);
+  box-shadow: 0 0 20px rgba(230, 25, 25, 0.4), inset 0 0 20px rgba(230, 25, 25, 0.2);
+  transition: all 0.30s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.goth-glow-text {
+  text-shadow: 0 0 8px rgba(230, 25, 25, 0.8), 0 0 18px rgba(128, 10, 10, 0.5);
+}
+
+.goth-glow-purple {
+  text-shadow: 0 0 8px rgba(154, 77, 255, 0.8), 0 0 18px rgba(154, 77, 255, 0.4);
+}
+
+.goth-glow-border-purple {
+  box-shadow: 0 0 12px rgba(154, 77, 255, 0.3);
+}
+
+.goth-glow-red-ring {
+  box-shadow: 0 0 25px rgba(230, 25, 25, 0.75), inset 0 0 25px rgba(128, 10, 10, 0.5);
+}
+
+/* Custom typewriter typing pulse cursor */
+.goth-cursor {
+  border-right: 2px solid #e61919;
+  animation: blink 0.75s step-end infinite;
+}
+
+@keyframes blink {
+  from, to { border-color: transparent }
+  50% { border-color: #e61919; }
 }
