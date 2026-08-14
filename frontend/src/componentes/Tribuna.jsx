@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 /**
- * Componente del Módulo 2: Tribuna.
+ * Componente del Módulo 2: Tribuna (Con Identificadores de Fuente [F#]).
  * Ofrece una interfaz para formular preguntas y recibir ensayos respaldados
- * por las citas reales más afines, simulando un flujo de escritura fluido.
+ * por las citas del dataset maestro referenciadas mediante códigos flotantes.
  */
 export default function Tribuna() {
   // Estados reactivos con nomenclatura descriptiva en español
@@ -42,7 +42,7 @@ export default function Tribuna() {
       'Recuperando citas afines del dataset maestro...',
       'Analizando coeficientes de similitud coseno...',
       'Orquestando ensayo argumentativo en la IA...',
-      'Trazando flujo lógico y citas en inglés...'
+      'Inyectando referencias de sustento [F1], [F2]...'
     ];
     
     let etapaActual = 0;
@@ -130,13 +130,23 @@ export default function Tribuna() {
         (parte.startsWith('«') && parte.endsWith('»'));
 
       if (esComilla) {
+        // Encontrar cuál cita del dataset maestro coincide
+        // Como orador_tribuna.py utiliza la primera cita como eje, la asociamos para mostrar detalles
+        const citaAsociada = citasUtilizadas[0];
+        
         return (
           <mark 
             key={idx} 
-            className="bg-indigo-500/20 text-indigo-300 font-semibold italic border-b border-indigo-500/30 px-1 rounded transition duration-200 hover:bg-indigo-500/30 cursor-help"
-            title="Cita textual recuperada directamente del dataset maestro (verificada)."
+            className="bg-indigo-500/20 text-indigo-300 font-semibold italic border-b border-indigo-500/30 px-1 rounded transition duration-200 hover:bg-indigo-500/30 cursor-help relative group inline-block"
           >
             {parte}
+            {citaAsociada && (
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-slate-950 border border-slate-800 text-slate-350 text-[11px] font-sans font-normal p-3 rounded-lg shadow-2xl opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 pointer-events-none transition-all duration-200 z-50 leading-relaxed text-left">
+                <span className="block font-bold text-indigo-400 mb-1">Fuente real: {citaAsociada.autor}</span>
+                "{citaAsociada.frase}"
+                <span className="block text-[9px] text-slate-500 font-mono mt-1 text-right">Afinidad: {(citaAsociada.similitud * 100).toFixed(0)}%</span>
+              </span>
+            )}
           </mark>
         );
       }
@@ -203,7 +213,7 @@ export default function Tribuna() {
 
       {/* Resultados del Debate */}
       {!estaCargando && ensayoTextoVisible && (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 font-sans">
           
           {/* Tarjeta de Ensayo */}
           <div className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-8 shadow-xl relative overflow-hidden">
@@ -217,7 +227,7 @@ export default function Tribuna() {
             </h3>
             
             {/* Texto del ensayo con las partes resaltadas fluyendo */}
-            <div className="text-slate-200 leading-loose text-base flex flex-col gap-6 relative z-10 text-justify font-sans">
+            <div className="text-slate-200 leading-loose text-base flex flex-col gap-6 relative z-10 text-justify">
               {renderizarEnsayoConResaltado(ensayoTextoVisible)}
             </div>
           </div>
@@ -226,7 +236,7 @@ export default function Tribuna() {
           {citasUtilizadas.length > 0 && (
             <div className="flex flex-col gap-4">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 px-1">
-                Citas Utilizadas de Soporte ({citasUtilizadas.length})
+                Referencias / Citas de Soporte ({citasUtilizadas.length})
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -235,15 +245,20 @@ export default function Tribuna() {
                     key={index}
                     className="bg-slate-950/40 border border-slate-900 rounded-xl p-5 hover:border-slate-850 transition duration-300 flex flex-col justify-between gap-3 animate-fade-in"
                   >
-                    <p className="text-xs text-slate-300 italic leading-relaxed">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-bold px-2 py-0.5 rounded font-mono">
+                        [F{index + 1}]
+                      </span>
+                      <span className="text-xs text-indigo-400 font-bold">
+                        {c.autor}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-350 italic leading-relaxed">
                       “{c.frase}”
                     </p>
-                    <div className="flex items-center justify-between gap-2 border-t border-slate-900/60 pt-3">
-                      <span className="text-xs text-indigo-400 font-bold">
-                        — {c.autor}
-                      </span>
+                    <div className="flex items-center justify-end border-t border-slate-900/60 pt-3">
                       <span className="text-[10px] font-mono font-bold text-slate-500">
-                        Afinidad: {(c.similitud * 100).toFixed(0)}%
+                        Afinidad Semántica: {(c.similitud * 100).toFixed(0)}%
                       </span>
                     </div>
                   </div>

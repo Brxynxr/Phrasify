@@ -40,28 +40,23 @@ async def generar_ensayo_ia(pregunta: str, citas_relevantes: list) -> str:
     cita_texto = primera_cita["frase"]
     cita_autor = primera_cita["autor"]
     cita_tags = ", ".join(primera_cita["tags"])
-    
-    # 2. Construir el prompt heurístico multilingüe para el modelo 0.5B
+        
+    # 2. Construir el nuevo prompt refinado y directo para debates filosóficos
     prompt = f"""
-Task: Write a two-paragraph response arguing about the user's question: "{pregunta}"
+Escribe una reflexión filosófica de exactamente dos párrafos en español respondiendo a la idea: "{pregunta}"
 
-INSTRUCCIÓN DE IDIOMA (MANDATORIA):
-Debes responder en el mismo idioma en el que está escrita la pregunta (si la pregunta está en español, responde en español; si está en inglés, responde en inglés).
-
-Soporte documental a integrar (Obligatorio):
-- Cita literal: "{cita_texto}" (DO NOT translate this quote. Write it exactly in English).
+Sustento documental (Obligatorio):
+- Cita: "{cita_texto}"
 - Autor: {cita_autor}
-- Relación conceptual (Palabras clave): {cita_tags}
 
-Estructura de dos párrafos:
-Párrafo 1: Desarrolla un argumento o reflexión en el idioma del usuario que responda a la pregunta, guiándote por la relación conceptual ({cita_tags}).
-Párrafo 2: Introduce la cita de forma literal (en inglés) y atribúyela a su autor. Explica detalladamente cómo respalda tu punto.
-- En español usa: Como dijo {cita_autor}, "{cita_texto}".
-- En inglés usa: As {cita_autor} said, "{cita_texto}".
+Estructura de dos párrafos (Escribe el texto de corrido, sin títulos ni etiquetas como "Párrafo 1"):
+- Primer párrafo: Desarrolla una reflexión directa en español sobre el dilema, comenzando con una afirmación fuerte y conectores fluidos.
+- Segundo párrafo: Escribe textualmente: Como dijo {cita_autor}, "{cita_texto}". Y explica a continuación en español cómo esta frase da sentido a tu argumento.
 
-Reglas:
-- Responde estrictamente con el ensayo de dos párrafos. No agregues preámbulos, saludos, títulos ni despedidas.
-- Copia la cita literal "{cita_texto}" de forma exacta, en inglés, y entre comillas.
+Reglas clave:
+- Copia la cita "{cita_texto}" exacta en inglés, entre comillas.
+- NO agregues preámbulos ni introducciones como "En este ensayo voy a hablar". Ve directo al grano.
+- NO agregues nombres de sección o títulos. Escribe solo los párrafos.
 """
 
     # 3. Consumo de APIs según el proveedor configurado
@@ -79,7 +74,7 @@ Reglas:
                 "repeat_penalty": 1.3,
                 "presence_penalty": 0.8,
                 "frequency_penalty": 0.8,
-                "num_predict": 200,
+                "num_predict": 250,
                 "stop": ["\n\n\n", "["]
             }
         }
