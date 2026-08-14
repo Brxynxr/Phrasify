@@ -49,19 +49,19 @@ INSTRUCCIÓN DE IDIOMA (MANDATORIA):
 Debes responder en el mismo idioma en el que está escrita la pregunta (si la pregunta está en español, responde en español; si está en inglés, responde en inglés).
 
 Soporte documental a integrar (Obligatorio):
-- Cita literal: "{cita_texto}"
+- Cita literal: "{cita_texto}" (DO NOT translate this quote. Write it exactly in English).
 - Autor: {cita_autor}
 - Relación conceptual (Palabras clave): {cita_tags}
 
 Estructura de dos párrafos:
-Párrafo 1: Desarrolla un argumento o reflexión que responda a la pregunta, guiándote por la relación conceptual ({cita_tags}).
-Párrafo 2: Introduce la cita textualmente y atribúyela a su autor. Explica detalladamente cómo respalda tu punto.
+Párrafo 1: Desarrolla un argumento o reflexión en el idioma del usuario que responda a la pregunta, guiándote por la relación conceptual ({cita_tags}).
+Párrafo 2: Introduce la cita de forma literal (en inglés) y atribúyela a su autor. Explica detalladamente cómo respalda tu punto.
 - En español usa: Como dijo {cita_autor}, "{cita_texto}".
 - En inglés usa: As {cita_autor} said, "{cita_texto}".
 
 Reglas:
 - Responde estrictamente con el ensayo de dos párrafos. No agregues preámbulos, saludos, títulos ni despedidas.
-- Copia la cita literal "{cita_texto}" exacta y entre comillas.
+- Copia la cita literal "{cita_texto}" de forma exacta, en inglés, y entre comillas.
 """
 
     # 3. Consumo de APIs según el proveedor configurado
@@ -75,7 +75,11 @@ Reglas:
             "prompt": prompt,
             "stream": False,
             "options": {
-                "temperature": 0.3,
+                "temperature": 0.2,
+                "repeat_penalty": 1.3,
+                "presence_penalty": 0.8,
+                "frequency_penalty": 0.8,
+                "num_predict": 200,
                 "stop": ["\n\n\n", "["]
             }
         }
@@ -84,7 +88,7 @@ Reglas:
         
         async with httpx.AsyncClient() as cliente:
             try:
-                respuesta = await cliente.post(endpoint, json=payload, timeout=60.0)
+                respuesta = await cliente.post(endpoint, json=payload, timeout=120.0)
                 respuesta.raise_for_status()
                 datos_respuesta = respuesta.json()
                 return datos_respuesta.get("response", "").strip()
