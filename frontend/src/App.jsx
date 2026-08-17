@@ -128,12 +128,12 @@ function App() {
               </div>
 
               {/* Menú de pestañas de navegación góticas */}
-              <nav className="flex items-center gap-3">
+              <nav className="flex items-center gap-2">
                 
                 {/* Botón Volver al Inicio (Landing) */}
                 <button
                   onClick={() => setVistaActiva('landing')}
-                  className="px-4 py-2.5 rounded-lg text-xs font-serif uppercase tracking-widest transition-all duration-300 border-2 bg-black/60 border-[#800a0a]/40 text-[#e61919]/80 hover:text-[#e61919] hover:border-[#e61919] flex items-center gap-1.5 cursor-pointer"
+                  className="px-3.5 py-2.5 rounded-lg text-xs font-serif uppercase tracking-widest transition-all duration-300 text-slate-400 hover:text-[#e61919] hover:goth-glow-text flex items-center gap-1.5 cursor-pointer"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -141,16 +141,16 @@ function App() {
                   <span>Inicio</span>
                 </button>
 
-                {/* Divisor vertical */}
-                <div className="w-[1px] h-6 bg-[#800a0a]/40 mx-1"></div>
+                {/* Divisor vertical sutil */}
+                <div className="w-[1px] h-5 bg-[#800a0a]/30 mx-2"></div>
                 
                 {/* Botón Espejo (Módulo 1) */}
                 <button
                   onClick={() => setModuloActivo('espejo')}
-                  className={`px-5 py-2.5 rounded-lg text-xs font-serif uppercase tracking-widest transition-all duration-300 border-2 ${
+                  className={`px-5 py-2.5 rounded-lg text-xs font-serif uppercase tracking-widest transition-all duration-300 border-2 cursor-pointer ${
                     moduloActivo === 'espejo'
                       ? 'bg-[#250505] border-[#e61919] text-[#e61919] goth-glow-text shadow-[0_0_15px_rgba(230,25,25,0.4)]'
-                      : 'bg-[#0c0202] border-[#800a0a]/60 text-slate-400 hover:text-slate-200 hover:border-[#800a0a]'
+                      : 'bg-transparent border-transparent text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   Espejo
@@ -159,10 +159,10 @@ function App() {
                 {/* Botón Tribuna (Módulo 2) */}
                 <button
                   onClick={() => setModuloActivo('tribuna')}
-                  className={`px-5 py-2.5 rounded-lg text-xs font-serif uppercase tracking-widest transition-all duration-300 border-2 ${
+                  className={`px-5 py-2.5 rounded-lg text-xs font-serif uppercase tracking-widest transition-all duration-300 border-2 cursor-pointer ${
                     moduloActivo === 'tribuna'
                       ? 'bg-[#250505] border-[#e61919] text-[#e61919] goth-glow-text shadow-[0_0_15px_rgba(230,25,25,0.4)]'
-                      : 'bg-[#0c0202] border-[#800a0a]/60 text-slate-400 hover:text-slate-200 hover:border-[#800a0a]'
+                      : 'bg-transparent border-transparent text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   Tribuna
@@ -171,10 +171,10 @@ function App() {
                 {/* Botón Bitácora (Módulo 3) */}
                 <button
                   onClick={() => setModuloActivo('bitacora')}
-                  className={`px-5 py-2.5 rounded-lg text-xs font-serif uppercase tracking-widest transition-all duration-300 border-2 ${
+                  className={`px-5 py-2.5 rounded-lg text-xs font-serif uppercase tracking-widest transition-all duration-300 border-2 cursor-pointer ${
                     moduloActivo === 'bitacora'
                       ? 'bg-[#250505] border-[#e61919] text-[#e61919] goth-glow-text shadow-[0_0_15px_rgba(230,25,25,0.4)]'
-                      : 'bg-[#0c0202] border-[#800a0a]/60 text-slate-400 hover:text-slate-200 hover:border-[#800a0a]'
+                      : 'bg-transparent border-transparent text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   Bitácora
@@ -192,14 +192,15 @@ function App() {
             </div>
           </main>
 
-          {/* Pie de página gótico */}
-          <footer className="border-t-2 border-[#800a0a]/80 bg-[#0c0202] py-6 text-center text-xs text-slate-500 font-serif tracking-widest">
+          {/* Pie de página gótico con línea de gradiente láser */}
+          <footer className="relative bg-[#0c0202] py-8 text-center text-[11px] text-slate-500 font-serif tracking-widest">
+            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#800a0a]/30 to-transparent pointer-events-none" />
             <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
               <p>RESONANCIA &copy; 2026. GRABADO EN EL MONSTER-REPOSITORIO.</p>
-              <div className="flex gap-6 text-[#800a0a]">
-                <span className="hover:text-[#e61919] transition-colors cursor-pointer" onClick={() => setModuloActivo('espejo')}>ESPEJO</span>
-                <span className="hover:text-[#e61919] transition-colors cursor-pointer" onClick={() => setModuloActivo('tribuna')}>TRIBUNA</span>
-                <span className="hover:text-[#e61919] transition-colors cursor-pointer" onClick={() => setModuloActivo('bitacora')}>BITÁCORA</span>
+              <div className="flex gap-6 text-[#800a0a]/70">
+                <span className="hover:text-[#e61919] hover:goth-glow-text transition-all duration-300 cursor-pointer" onClick={() => setModuloActivo('espejo')}>ESPEJO</span>
+                <span className="hover:text-[#e61919] hover:goth-glow-text transition-all duration-300 cursor-pointer" onClick={() => setModuloActivo('tribuna')}>TRIBUNA</span>
+                <span className="hover:text-[#e61919] hover:goth-glow-text transition-all duration-300 cursor-pointer" onClick={() => setModuloActivo('bitacora')}>BITÁCORA</span>
               </div>
             </div>
           </footer>
