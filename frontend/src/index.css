@@ -14,6 +14,11 @@
   --color-goth-accent: #9a4dff;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 /* Custom Gothic Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

@@ -20,9 +20,9 @@ export default function Landing({ alSeleccionarModulo }) {
         </svg>
       ),
       flujo: [
-        { paso: "I", titulo: "Expresar", desc: "Escribes tu emoción actual en la barra de consulta." },
-        { paso: "II", titulo: "Buscar", desc: "El algoritmo analiza el significado profundo de tus palabras." },
-        { paso: "III", titulo: "Reflejar", desc: "Se te muestran las citas reales más afines en círculos de neón." }
+        { paso: "▲", titulo: "Expresar", desc: "Escribes tu emoción actual en la barra de consulta." },
+        { paso: "☉", titulo: "Buscar", desc: "El algoritmo analiza el significado profundo de tus palabras." },
+        { paso: "✦", titulo: "Reflejar", desc: "Se te muestran las citas reales más afines en círculos de neón." }
       ],
       invertido: false, // Alineado a la izquierda
       glowClass: "goth-glow-text",
@@ -44,9 +44,9 @@ export default function Landing({ alSeleccionarModulo }) {
         </svg>
       ),
       flujo: [
-        { paso: "I", titulo: "Plantear", desc: "Preguntas un dilema existencial en la barra de entrada." },
-        { paso: "II", titulo: "Respaldar", desc: "El orador comprueba la afinidad mínima con citas reales." },
-        { paso: "III", titulo: "Discursar", desc: "Se genera un ensayo argumentativo con la cita resaltada en rojo." }
+        { paso: "▼", titulo: "Plantear", desc: "Preguntas un dilema existencial en la barra de entrada." },
+        { paso: "❖", titulo: "Respaldar", desc: "El orador comprueba la afinidad mínima con citas reales." },
+        { paso: "⚡", titulo: "Discursar", desc: "Se genera un ensayo argumentativo con la cita resaltada en rojo." }
       ],
       invertido: true, // Invertido en desktop
       glowClass: "goth-glow-purple",
@@ -68,9 +68,9 @@ export default function Landing({ alSeleccionarModulo }) {
         </svg>
       ),
       flujo: [
-        { paso: "I", titulo: "Anotar", desc: "Escribes reflexiones personales dentro de tu diario." },
-        { paso: "II", titulo: "Empaquetar", desc: "El sistema agrupa los textos en bloques de tamaño limitado." },
-        { paso: "III", titulo: "Medir", desc: "Se calcula la eficiencia con barras de color (rojo=lleno, amarillo=vacío)." }
+        { paso: "✒", titulo: "Anotar", desc: "Escribes reflexiones personales dentro de tu diario." },
+        { paso: "⬢", titulo: "Empaquetar", desc: "El sistema agrupa los textos en bloques de tamaño limitado." },
+        { paso: "⌛", titulo: "Medir", desc: "Se calcula la eficiencia con barras de color (rojo=lleno, amarillo=vacío)." }
       ],
       invertido: false, // Alineado a la izquierda
       glowClass: "goth-glow-amber",
@@ -84,13 +84,13 @@ export default function Landing({ alSeleccionarModulo }) {
   ];
 
   return (
-    <section className="w-full min-h-screen flex flex-col justify-center items-center px-6 py-24 relative overflow-x-hidden select-none">
+    <section className="w-full min-h-screen flex flex-col justify-center items-center px-4 md:px-10 py-24 relative overflow-x-hidden select-none">
       
       {/* Luces neón en el fondo */}
       <div className="absolute top-[15%] left-[5%] w-96 h-96 rounded-full bg-[#800a0a]/5 blur-[130px] pointer-events-none animate-float-slow"></div>
       <div className="absolute bottom-[20%] right-[5%] w-[450px] h-[450px] rounded-full bg-[#e61919]/3 blur-[160px] pointer-events-none animate-float-medium"></div>
 
-      <div className="max-w-5xl w-full flex flex-col items-center gap-20 relative z-10">
+      <div className="max-w-7xl w-full flex flex-col items-center gap-20 relative z-10">
         
         {/* Cabecera de la Landing */}
         <div className="flex flex-col items-center gap-4 text-center animate-fade-in">
@@ -107,19 +107,19 @@ export default function Landing({ alSeleccionarModulo }) {
         </div>
 
         {/* Módulos en Estructura Libre Vertical con distribución alternada */}
-        <div className="w-full flex flex-col gap-28 mt-8">
+        <div className="w-full flex flex-col gap-32 mt-8 overflow-hidden">
           {modulosInfo.map((mod, modIdx) => (
             <div 
               key={mod.id} 
-              className={`w-full flex flex-col md:grid md:grid-cols-12 gap-8 md:gap-12 items-center relative animate-fade-in opacity-0-init ${mod.delayClass}`}
+              className="w-full flex flex-col md:grid md:grid-cols-12 gap-8 md:gap-16 items-center relative py-6"
             >
               {/* Separador entre módulos (salvo el primero) */}
               {modIdx > 0 && (
-                <div className="absolute -top-14 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#800a0a]/15 to-transparent pointer-events-none" />
+                <div className="absolute -top-16 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#800a0a]/15 to-transparent pointer-events-none" />
               )}
 
-              {/* Bloque de Información del Módulo */}
-              <div className={`flex flex-col gap-4 md:col-span-5 ${mod.invertido ? 'md:order-2 md:items-end md:text-right' : 'md:items-start md:text-left'} items-center text-center`}>
+              {/* Bloque de Información del Módulo con animación */}
+              <div className={`flex flex-col gap-4 md:col-span-5 ${mod.invertido ? 'md:order-2 md:items-end md:text-right' : 'md:items-start md:text-left'} items-center text-center animate-fade-in opacity-0-init ${mod.delayClass}`}>
                 <div className="flex items-center gap-3">
                   <div className={`p-2.5 rounded-xl ${mod.iconClass}`}>
                     {mod.icono}
@@ -134,7 +134,7 @@ export default function Landing({ alSeleccionarModulo }) {
                 <p className="text-sm text-slate-400 leading-relaxed font-serif mt-2 max-w-md">
                   {mod.descripcion}
                 </p>
-                <div className="mt-3">
+                <div className={`mt-3 animate-fade-in opacity-0-init ${mod.delayClass} delay-600`}>
                   <button
                     onClick={() => alSeleccionarModulo(mod.id)}
                     className={`font-serif uppercase tracking-widest font-bold px-8 py-3.5 rounded-xl text-[10px] transition-all duration-300 border-2 cursor-pointer ${mod.btnClass}`}
@@ -145,26 +145,29 @@ export default function Landing({ alSeleccionarModulo }) {
               </div>
 
               {/* Bloque del Ciclo de Procedimiento */}
-              <div className={`w-full md:col-span-7 relative px-4 ${mod.invertido ? 'md:order-1' : ''}`}>
+              <div className={`w-full md:col-span-7 relative px-4 ${mod.invertido ? 'md:order-1' : ''} overflow-hidden`}>
                 {/* Línea conectora horizontal solo para desktop */}
                 <div className={`hidden md:block absolute top-[22px] left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent ${mod.conectorClass} to-transparent z-0`} />
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 relative z-10">
-                  {mod.flujo.map((f, idx) => (
-                    <div key={idx} className="flex flex-col items-center text-center gap-3 group">
-                      <div className={`w-11 h-11 rounded-full bg-[#0c0202] border-2 flex items-center justify-center font-serif font-bold text-xs transition-all duration-300 ${mod.circleClass}`}>
-                        {f.paso}
+                  {mod.flujo.map((f, idx) => {
+                    const delayPaso = idx === 0 ? 'delay-150' : idx === 1 ? 'delay-300' : 'delay-450';
+                    return (
+                      <div key={idx} className={`flex flex-col items-center text-center gap-3 group animate-fade-in opacity-0-init ${mod.delayClass} ${delayPaso}`}>
+                        <div className={`w-11 h-11 rounded-full bg-[#0c0202] border-2 flex items-center justify-center font-serif font-bold text-xs transition-all duration-300 ${mod.circleClass}`}>
+                          {f.paso}
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <span className="text-xs font-serif text-slate-300 font-semibold uppercase tracking-wider">
+                            {f.titulo}
+                          </span>
+                          <p className="text-[11px] text-slate-500 leading-relaxed font-sans px-2">
+                            {f.desc}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs font-serif text-slate-300 font-semibold uppercase tracking-wider">
-                          {f.titulo}
-                        </span>
-                        <p className="text-[11px] text-slate-500 leading-relaxed font-sans px-2">
-                          {f.desc}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
