@@ -14,6 +14,12 @@ export default function Tribuna() {
   const [errorMensaje, setErrorMensaje] = useState('');
   const [estaEscribiendo, setEstaEscribiendo] = useState(false);
 
+  const ejemplosPreguntas = [
+    "¿Es más importante el conocimiento o la imaginación?",
+    "¿Qué sentido tiene la existencia humana si somos efímeros?",
+    "¿Es el sufrimiento indispensable para alcanzar la verdadera sabiduría?"
+  ];
+
   // Efecto máquina de escribir — palabra por palabra con cursor gótico
   const iniciarEfectoEscritura = (textoCompleto) => {
     setEnsayoTextoVisible('');
@@ -176,6 +182,21 @@ export default function Tribuna() {
             <p className="text-xs text-red-500 font-bold ml-1 font-mono">{errorMensaje}</p>
           )}
         </form>
+
+        {/* Chips de ejemplos rápidos */}
+        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[#800a0a]/20">
+          <span className="text-[10px] text-slate-500 font-serif uppercase tracking-widest flex items-center pr-1.5 select-none">Preguntas rápidas:</span>
+          {ejemplosPreguntas.map((ej, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => setPreguntaTexto(ej)}
+              className="bg-[#0c0202]/60 hover:bg-[#800a0a]/25 text-slate-400 hover:text-slate-200 border border-[#800a0a]/40 hover:border-[#e61919]/60 px-3 py-1.5 rounded-full text-xs font-serif tracking-wide transition-all duration-200"
+            >
+              {ej}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Pantalla de Carga Gótica */}

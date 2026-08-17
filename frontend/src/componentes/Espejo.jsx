@@ -10,6 +10,12 @@ export default function Espejo() {
   const [citasResultados, setCitasResultados] = useState([]);
   const [errorMensaje, setErrorMensaje] = useState('');
 
+  const ejemplos = [
+    "Siento que el tiempo pasa muy rápido y no logro mis metas.",
+    "Tengo miedo al fracaso pero quiero emprender un camino nuevo.",
+    "Siento nostalgia por los tiempos y memorias que ya no volverán."
+  ];
+
   const ejecutarBusqueda = async (evento) => {
     evento.preventDefault();
     
@@ -95,6 +101,21 @@ export default function Espejo() {
             <p className="text-xs text-red-500 font-bold ml-1 mt-1 font-mono">{errorMensaje}</p>
           )}
         </form>
+
+        {/* Chips de ejemplos rápidos */}
+        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[#800a0a]/20">
+          <span className="text-[10px] text-slate-500 font-serif uppercase tracking-widest flex items-center pr-1.5 select-none">Pruebas rápidas:</span>
+          {ejemplos.map((ej, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => setConsultaTexto(ej)}
+              className="bg-[#0c0202]/60 hover:bg-[#800a0a]/25 text-slate-400 hover:text-slate-200 border border-[#800a0a]/40 hover:border-[#e61919]/60 px-3 py-1.5 rounded-full text-xs font-serif tracking-wide transition-all duration-200"
+            >
+              {ej.length > 40 ? `${ej.substring(0, 37)}...` : ej}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Skeleton Loader de Carga al estilo Gótico */}
