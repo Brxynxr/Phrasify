@@ -115,3 +115,57 @@
 .animate-slide-up-fade {
   animation: slide-up-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Animaciones para la Landing Page y efectos premium */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) scale(1.05);
+  }
+}
+
+@keyframes float-medium {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(15px) scale(0.95);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 12s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: float-medium 9s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Soporte para preferencias de reducción de movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-slow,
+  .animate-float-medium,
+  .animate-fade-in,
+  .animate-slide-up-fade {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
