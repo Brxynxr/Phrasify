@@ -158,21 +158,20 @@ export default function Tribuna() {
           </div>
         </div>
 
-        <form onSubmit={debatirTesis} className="flex flex-col gap-5">
-          <textarea
-            value={preguntaTexto}
-            onChange={(e) => setPreguntaTexto(e.target.value)}
-            placeholder="Ej: ¿Es el conocimiento o la imaginación más importante para entender el mundo?"
-            rows="3"
-            disabled={estaCargando}
-            className="w-full bg-black/80 border-2 border-[#800a0a]/60 rounded-xl p-4 text-sm text-slate-200 placeholder-slate-700 focus:outline-none focus:border-[#e61919] focus:ring-1 focus:ring-[#e61919]/30 transition-all duration-300 resize-none font-sans"
-          />
-
-          <div className="flex justify-end border-t border-[#800a0a]/30 pt-4">
+        <form onSubmit={debatirTesis} className="flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <textarea
+              value={preguntaTexto}
+              onChange={(e) => setPreguntaTexto(e.target.value)}
+              placeholder="Ej: ¿Es el conocimiento o la imaginación más importante para entender el mundo?"
+              rows="3"
+              disabled={estaCargando}
+              className="flex-1 bg-black/80 border-2 border-[#800a0a]/60 rounded-xl p-4 text-sm text-slate-200 placeholder-slate-700 focus:outline-none focus:border-[#e61919] focus:ring-1 focus:ring-[#e61919]/30 transition-all duration-300 resize-none font-sans"
+            />
             <button
               type="submit"
               disabled={estaCargando}
-              className="w-full sm:w-auto bg-[#800a0a] hover:bg-[#e61919] text-white font-serif uppercase tracking-widest font-semibold px-8 py-3.5 rounded-xl text-sm transition-all duration-300 border border-[#e61919]/30 shadow-[0_4px_15px_rgba(128,10,10,0.4)] hover:shadow-[0_4px_20px_rgba(230,25,25,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#800a0a] hover:bg-[#e61919] text-white font-serif uppercase tracking-widest font-semibold px-6 py-3.5 rounded-xl text-sm transition-all duration-300 border border-[#e61919]/30 shadow-[0_4px_15px_rgba(128,10,10,0.4)] hover:shadow-[0_4px_20px_rgba(230,25,25,0.6)] disabled:opacity-50 disabled:cursor-not-allowed sm:self-stretch flex items-center justify-center min-w-[180px]"
             >
               Subir a la Tribuna
             </button>
