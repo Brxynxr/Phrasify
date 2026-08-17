@@ -158,6 +158,30 @@
   animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Clases de retardo para animación en cascada */
+.delay-150 {
+  animation-delay: 150ms;
+}
+.delay-300 {
+  animation-delay: 300ms;
+}
+.delay-450 {
+  animation-delay: 450ms;
+}
+.delay-600 {
+  animation-delay: 600ms;
+}
+
+/* Estado inicial opaco para animaciones de aparición */
+.opacity-0-init {
+  opacity: 0;
+}
+
+/* Efectos de brillo de color Ámbar Gótico */
+.goth-glow-amber {
+  text-shadow: 0 0 8px rgba(217, 119, 6, 0.85), 0 0 18px rgba(180, 80, 10, 0.5);
+}
+
 /* Soporte para preferencias de reducción de movimiento */
 @media (prefers-reduced-motion: reduce) {
   .animate-float-slow,
