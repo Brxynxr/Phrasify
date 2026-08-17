@@ -32,7 +32,7 @@ def limpiar_ensayo_ia(texto: str) -> str:
     """
     Limpia el texto del ensayo de forma defensiva para eliminar cualquier
     etiqueta de estructura, títulos o notas aclaratorias coladas por el LLM.
-    Preserva la separación de dos párrafos.
+    Preserva y garantiza que se devuelvan exactamente dos párrafos.
     """
     if not texto:
         return ""
@@ -80,7 +80,23 @@ def limpiar_ensayo_ia(texto: str) -> str:
     if len(partes_nota) > 1:
         texto_filtrado = partes_nota[0].strip()
 
-    return texto_filtrado.strip()
+    # 4. Asegurar exactamente 2 párrafos
+    texto_normalizado = re.sub(r'\n{3,}', '\n\n', texto_filtrado)
+    parrafos = [p.strip() for p in texto_normalizado.split('\n\n') if p.strip()]
+    
+    if len(parrafos) > 2:
+        parrafo_1 = parrafos[0]
+        parrafo_2 = " ".join(parrafos[1:])
+        return f"{parrafo_1}\n\n{parrafo_2}"
+    elif len(parrafos) == 1:
+        mitad = len(parrafos[0]) // 2
+        punto = parrafos[0].find(".", mitad)
+        if punto != -1:
+            parrafo_1 = parrafos[0][:punto+1].strip()
+            parrafo_2 = parrafos[0][punto+1:].strip()
+            return f"{parrafo_1}\n\n{parrafo_2}"
+        
+    return "\n\n".join(parrafos)
 
 async def generar_ensayo_ia(pregunta: str, citas_relevantes: list) -> str:
     """
@@ -115,12 +131,12 @@ Pregunta del usuario: "{pregunta}"
 REGLAS OBLIGATORIAS DE ESTRUCTURA Y FORMATO:
 1. El ensayo debe constar de exactamente DOS párrafos, separados únicamente por una línea en blanco. No generes más de dos párrafos bajo ninguna circunstancia.
 2. Ambos párrafos deben mantener un tono profundamente filosófico, reflexivo, existencial y analítico de alta calidad literaria.
-3. En el PÁRRAFO 1, plantea tu reflexión e integra de forma fluida la siguiente cita de soporte. Envuelve ÚNICAMENTE el texto de la cita en comillas dobles (p. ej. "{cita_limpia}"). Ninguna otra parte del párrafo debe llevar comillas.
-   * Cita exacta a integrar (en inglés): "{cita_limpia}"
+3. En el PÁRRAFO 1, plantea tu reflexión e integra de forma narrativa y fluida la esencia de la siguiente cita de soporte (en español, como texto plano, sin usar comillas dobles en ella). No escribas la cita en inglés ni uses comillas dobles en absoluto dentro de la redacción.
+   * Cita de soporte: "{cita_limpia}"
    * Autor de la cita: {cita_autor}
-   Ejemplo de integración correcta: Al examinar este dilema, la postura de {cita_autor} cuando sostiene que "{cita_limpia}" nos abre una ventana a reflexionar sobre...
+   Ejemplo de integración fluida: Al examinar esta cuestión, la visión de {cita_autor} acerca de que el conocimiento tiene límites y debe ser complementado por el pensamiento creativo nos invita a considerar...
 4. En el PÁRRAFO 2, continúa la corriente de pensamiento de forma orgánica y fluida, ofreciendo un cierre reflexivo. Está estrictamente prohibido iniciar el párrafo con conectores de conclusión predecibles como "En conclusión,", "En resumen,", "Por lo tanto,", "Finalmente,", "En síntesis,", o "Como conclusión,".
-5. No devuelvas títulos, subtítulos, etiquetas (como "Párrafo 1:", "Ensayo:"), notas explicativas ni comentarios al final. Devuelve solo los dos párrafos de texto.
+5. No devuelvas títulos, subtítulos, etiquetas (como "Párrafo 1:", "Ensayo:"), comillas externas, notas explicativas ni comentarios al final. Devuelve solo los dos párrafos de texto plano.
 
 ENSAYO:"""
 
