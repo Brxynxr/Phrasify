@@ -16,8 +16,7 @@ export default function Tribuna() {
 
   const ejemplosPreguntas = [
     "¿Es más importante el conocimiento o la imaginación?",
-    "¿Qué sentido tiene la existencia humana si somos efímeros?",
-    "¿Es el sufrimiento indispensable para alcanzar la verdadera sabiduría?"
+    "¿Qué sentido tiene la existencia humana si somos efímeros?"
   ];
 
   // Efecto máquina de escribir — palabra por palabra con cursor gótico
@@ -158,7 +157,7 @@ export default function Tribuna() {
           </div>
         </div>
 
-        <form onSubmit={debatirTesis} className="flex flex-col gap-3">
+        <form onSubmit={debatirTesis} className="flex flex-col gap-3 max-w-3xl mx-auto w-full">
           <div className="flex flex-col sm:flex-row gap-3">
             <textarea
               value={preguntaTexto}
@@ -183,7 +182,7 @@ export default function Tribuna() {
         </form>
 
         {/* Chips de ejemplos rápidos */}
-        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[#800a0a]/20">
+        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[#800a0a]/20 max-w-3xl mx-auto w-full">
           <span className="text-[10px] text-slate-500 font-serif uppercase tracking-widest flex items-center pr-1.5 select-none">Preguntas rápidas:</span>
           {ejemplosPreguntas.map((ej, idx) => (
             <button
