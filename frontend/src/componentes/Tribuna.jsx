@@ -168,11 +168,26 @@ export default function Tribuna() {
             className="w-full bg-black/80 border-2 border-[#800a0a]/60 rounded-xl p-4 text-sm text-slate-200 placeholder-slate-700 focus:outline-none focus:border-[#e61919] focus:ring-1 focus:ring-[#e61919]/30 transition-all duration-300 resize-none font-sans"
           />
 
-          <div className="flex justify-end border-t border-[#800a0a]/30 pt-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-t border-[#800a0a]/30 pt-4">
+            {/* Chips de ejemplos rápidos */}
+            <div className="flex flex-wrap gap-2 items-center flex-1">
+              <span className="text-[10px] text-slate-500 font-serif uppercase tracking-widest flex items-center pr-1.5 select-none">Preguntas rápidas:</span>
+              {ejemplosPreguntas.map((ej, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setPreguntaTexto(ej)}
+                  className="bg-[#0c0202]/60 hover:bg-[#800a0a]/25 text-slate-400 hover:text-slate-200 border border-[#800a0a]/40 hover:border-[#e61919]/60 px-3 py-1.5 rounded-full text-xs font-serif tracking-wide transition-all duration-200"
+                >
+                  {ej}
+                </button>
+              ))}
+            </div>
+
             <button
               type="submit"
               disabled={estaCargando}
-              className="w-full sm:w-auto bg-[#800a0a] hover:bg-[#e61919] text-white font-serif uppercase tracking-widest font-semibold px-8 py-3.5 rounded-xl text-sm transition-all duration-300 border border-[#e61919]/30 shadow-[0_4px_15px_rgba(128,10,10,0.4)] hover:shadow-[0_4px_20px_rgba(230,25,25,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full md:w-auto bg-[#800a0a] hover:bg-[#e61919] text-white font-serif uppercase tracking-widest font-semibold px-8 py-3.5 rounded-xl text-sm transition-all duration-300 border border-[#e61919]/30 shadow-[0_4px_15px_rgba(128,10,10,0.4)] hover:shadow-[0_4px_20px_rgba(230,25,25,0.6)] disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
             >
               Subir a la Tribuna
             </button>
@@ -182,21 +197,6 @@ export default function Tribuna() {
             <p className="text-xs text-red-500 font-bold ml-1 font-mono">{errorMensaje}</p>
           )}
         </form>
-
-        {/* Chips de ejemplos rápidos */}
-        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[#800a0a]/20">
-          <span className="text-[10px] text-slate-500 font-serif uppercase tracking-widest flex items-center pr-1.5 select-none">Preguntas rápidas:</span>
-          {ejemplosPreguntas.map((ej, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => setPreguntaTexto(ej)}
-              className="bg-[#0c0202]/60 hover:bg-[#800a0a]/25 text-slate-400 hover:text-slate-200 border border-[#800a0a]/40 hover:border-[#e61919]/60 px-3 py-1.5 rounded-full text-xs font-serif tracking-wide transition-all duration-200"
-            >
-              {ej}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Pantalla de Carga Gótica */}
@@ -234,7 +234,7 @@ export default function Tribuna() {
             <h3 className="text-xs font-serif font-semibold uppercase tracking-widest text-[#e61919] goth-glow-text mb-6 relative z-10">Discurso Emitido</h3>
             
             {/* Cuerpo del ensayo con efecto de cursor parpadeante gótico al escribir */}
-            <div className="text-slate-200 leading-loose text-base flex flex-col gap-6 relative z-10 text-justify font-sans">
+            <div className="text-slate-200 leading-loose text-base flex flex-col gap-6 relative z-10 text-left font-sans">
               {ensayoTextoVisible ? (
                 <>
                   <span className="whitespace-pre-line">{renderizarEnsayoConResaltado(ensayoTextoVisible)}</span>
