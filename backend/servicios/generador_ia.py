@@ -125,18 +125,19 @@ async def generar_ensayo_ia(pregunta: str, citas_relevantes: list) -> str:
 
 # 3. Prompt unificado estructurado para evitar alucinaciones y metadata
     prompt_completo = f"""[INSTRUCCIONES DE REDACCIÓN]
-Escribe un mini-ensayo filosófico en español sobre el dilema planteado por el usuario.
-Pregunta del usuario: "{pregunta}"
+Escribe un mini-ensayo filosófico en español de exactamente DOS párrafos respondiendo a esta pregunta: "{pregunta}"
 
-REGLAS OBLIGATORIAS DE ESTRUCTURA Y FORMATO:
-1. El ensayo debe constar de exactamente DOS párrafos, separados únicamente por una línea en blanco. No generes más de dos párrafos bajo ninguna circunstancia.
-2. Ambos párrafos deben mantener un tono profundamente filosófico, reflexivo, existencial y analítico de alta calidad literaria.
-3. En el PÁRRAFO 1, plantea tu reflexión e integra de forma narrativa y fluida la esencia de la siguiente cita de soporte (en español, como texto plano, sin usar comillas dobles en ella). No escribas la cita en inglés ni uses comillas dobles en absoluto dentro de la redacción.
-   * Cita de soporte: "{cita_limpia}"
-   * Autor de la cita: {cita_autor}
-   Ejemplo de integración fluida: Al examinar esta cuestión, la visión de {cita_autor} acerca de que el conocimiento tiene límites y debe ser complementado por el pensamiento creativo nos invita a considerar...
-4. En el PÁRRAFO 2, continúa la corriente de pensamiento de forma orgánica y fluida, ofreciendo un cierre reflexivo. Está estrictamente prohibido iniciar el párrafo con conectores de conclusión predecibles como "En conclusión,", "En resumen,", "Por lo tanto,", "Finalmente,", "En síntesis,", o "Como conclusión,".
-5. No devuelvas títulos, subtítulos, etiquetas (como "Párrafo 1:", "Ensayo:"), comillas externas, notas explicativas ni comentarios al final. Devuelve solo los dos párrafos de texto plano.
+REGLAS DE ESTRUCTURA:
+- Párrafo 1: Analiza la pregunta y plantea tu postura. Debes integrar de forma fluida y natural la siguiente cita de soporte, envolviéndola únicamente a ella en comillas dobles exactas ("...") para que el sistema pueda resaltarla:
+  * Cita a integrar textualmente en inglés: "{cita_limpia}"
+  * Autor de la cita: {cita_autor}
+  Ejemplo de integración: Al examinar esta cuestión, la célebre frase de {cita_autor} de que "{cita_limpia}" nos invita a reflexionar sobre...
+- Párrafo 2: Continúa la reflexión filosófica de forma orgánica y fluida, ofreciendo un cierre. Está estrictamente prohibido iniciar el párrafo con conectores de conclusión obvios como "En conclusión,", "En resumen,", "Por lo tanto,", "Finalmente,", o "En síntesis,".
+
+REGLAS DE FORMATO:
+- Devuelve únicamente los dos párrafos del ensayo, separados por una línea en blanco.
+- No uses comillas dobles en ninguna otra parte del texto, solo para envolver la cita de soporte en el párrafo 1.
+- No incluyas títulos, subtítulos, etiquetas (como "Párrafo 1:" o "Ensayo:") ni notas aclaratorias al final. Devuelve solo los dos párrafos.
 
 ENSAYO:"""
 

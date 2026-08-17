@@ -101,10 +101,39 @@ export default function Tribuna() {
     }
   };
 
-  const parrafos = ensayoTextoVisible.split('\n\n');
-  const parrafo1 = parrafos[0] || '';
-  const parrafo2 = parrafos[1] || '';
-  const mostrarCitaDestacada = suficientesFuentes && citasUtilizadas.length > 0 && (parrafos.length > 1 || !estaEscribiendo);
+  // Resalta texto entre comillas con tooltip de fuente y select-none
+  const renderizarEnsayoConResaltado = (texto) => {
+    if (!texto) return null;
+    // Captura comillas estándar ("), comillas tipográficas curvadas (“ y ”) y comillas angulares (« y »)
+    const partes = texto.split(/(".*?"|“.*?”|«.*?»)/g);
+    return partes.map((parte, idx) => {
+      const esComilla =
+        (parte.startsWith('"') && parte.endsWith('"')) ||
+        (parte.startsWith('\u201c') && parte.endsWith('\u201d')) ||
+        (parte.startsWith('\u00ab') && parte.endsWith('\u00bb'));
+      if (esComilla) {
+        const fraseLimpia = parte.replace(/["'«»“”]/g, '').trim().toLowerCase();
+        const citaAsociada = citasUtilizadas.find(c => 
+          c.frase.toLowerCase().includes(fraseLimpia) || 
+          fraseLimpia.includes(c.frase.toLowerCase())
+        ) || citasUtilizadas[0];
+        
+        return (
+          <mark key={idx} className="bg-[#800a0a]/30 text-[#e61919] goth-glow-text font-semibold italic border-b border-[#e61919]/50 px-1 rounded transition duration-200 hover:bg-[#800a0a]/50 cursor-help relative group inline-block font-sans">
+            {parte}
+            {citaAsociada && (
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-[#0c0202] border-2 border-[#800a0a] text-[11px] font-sans font-normal p-3 rounded-lg shadow-2xl opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 pointer-events-none transition-all duration-200 z-50 leading-relaxed text-left select-none">
+                <span className="block font-serif font-bold text-[#e61919] mb-1">Fuente real: {citaAsociada.autor}</span>
+                "{citaAsociada.frase}"
+                <span className="block text-[9px] text-slate-500 font-mono mt-1 text-right">Afinidad: {Math.round(citaAsociada.similitud * 100)}%</span>
+              </span>
+            )}
+          </mark>
+        );
+      }
+      return parte;
+    });
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto flex flex-col gap-8 animate-fade-in relative">
@@ -183,78 +212,14 @@ export default function Tribuna() {
             <div className="absolute -top-10 -left-6 text-[#800a0a]/15 text-[180px] font-serif select-none pointer-events-none">"</div>
             <h3 className="text-xs font-serif font-semibold uppercase tracking-widest text-[#e61919] goth-glow-text mb-6 relative z-10">Discurso Emitido</h3>
             
-            {/* Cuerpo del ensayo estructurado en 2 párrafos con la cita en medio */}
-            <div className="text-slate-200 leading-loose text-base flex flex-col gap-4 relative z-10 text-justify font-sans">
-              {parrafo1 && (
-                <p className="whitespace-pre-line">
-                  {parrafo1}
-                  {estaEscribiendo && !parrafo2 && <span className="goth-cursor inline-block w-[2px] h-[15px] bg-[#e61919] ml-1 animate-blink" />}
-                </p>
-              )}
-              
-              {/* Tarjeta de Cita Destacada Fija en Medio */}
-              {mostrarCitaDestacada && (
-                <div className="goth-card border-2 border-[#e61919] bg-[#0c0202]/95 rounded-2xl p-6 my-4 shadow-[0_0_20px_rgba(230,25,25,0.25)] relative overflow-hidden transition-all duration-500 animate-fade-in">
-                  <div className="absolute -top-6 -left-4 text-[#800a0a]/20 text-[100px] font-serif select-none pointer-events-none">“</div>
-                  <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-6">
-                    <div className="flex-1">
-                      <p className="text-base text-slate-100 font-serif italic font-semibold leading-relaxed">
-                        "{citasUtilizadas[0].frase}"
-                      </p>
-                      <span className="text-xs text-[#e61919] font-bold font-serif block mt-2">
-                        — {citasUtilizadas[0].autor}
-                      </span>
-                    </div>
-                    
-                    {/* Círculo de afinidad SVG de la cita destacada */}
-                    <div className="flex flex-col justify-center items-center shrink-0 text-center min-w-[90px] relative z-10">
-                      <span className="text-[9px] text-slate-500 uppercase font-serif tracking-widest mb-2 block">
-                        Afinidad
-                      </span>
-                      <div className="relative w-12 h-12 flex items-center justify-center">
-                        <svg className="w-full h-full transform -rotate-90">
-                          <circle
-                            cx="24"
-                            cy="24"
-                            r="20"
-                            className="stroke-[#0c0202] fill-transparent"
-                            strokeWidth="3"
-                          />
-                          <circle
-                            cx="24"
-                            cy="24"
-                            r="20"
-                            className="stroke-[#800a0a]/40 fill-transparent"
-                            strokeWidth="3"
-                          />
-                          <circle
-                            cx="24"
-                            cy="24"
-                            r="20"
-                            className="stroke-[#e61919] fill-transparent transition-all duration-1000 ease-out"
-                            strokeWidth="3"
-                            strokeDasharray={2 * Math.PI * 20}
-                            strokeDashoffset={2 * Math.PI * 20 * (1 - citasUtilizadas[0].similitud)}
-                            style={{
-                              filter: 'drop-shadow(0 0 4px rgba(230, 25, 25, 0.8))'
-                            }}
-                          />
-                        </svg>
-                        <span className="absolute text-xs font-extrabold text-[#e61919] goth-glow-text font-mono">
-                          {Math.round(citasUtilizadas[0].similitud * 100)}%
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {parrafo2 && (
-                <p className="whitespace-pre-line mt-2">
-                  {parrafo2}
+            {/* Cuerpo del ensayo con efecto de cursor parpadeante gótico al escribir */}
+            <div className="text-slate-200 leading-loose text-base flex flex-col gap-6 relative z-10 text-justify font-sans">
+              {ensayoTextoVisible ? (
+                <>
+                  <span className="whitespace-pre-line">{renderizarEnsayoConResaltado(ensayoTextoVisible)}</span>
                   {estaEscribiendo && <span className="goth-cursor inline-block w-[2px] h-[15px] bg-[#e61919] ml-1 animate-blink" />}
-                </p>
-              )}
+                </>
+              ) : null}
             </div>
           </div>
 
