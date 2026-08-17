@@ -1,11 +1,115 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
+/**
+ * Componente interno para manejar el revelado animado de cada sección de módulo
+ * utilizando IntersectionObserver de forma limpia y responsiva.
+ */
+function ModuloSeccionReveal({ mod, modIdx, alSeleccionarModulo }) {
+  const [revelado, setRevelado] = useState(false);
+  const elementoRef = useRef(null);
+
+  useEffect(() => {
+    const elemento = elementoRef.current;
+    if (!elemento) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setRevelado(true);
+          observer.unobserve(elemento);
+        }
+      },
+      {
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px"
+      }
+    );
+
+    observer.observe(elemento);
+
+    return () => {
+      if (elemento) {
+        observer.unobserve(elemento);
+      }
+    };
+  }, []);
+
+  return (
+    <div 
+      ref={elementoRef}
+      className="w-full flex flex-col md:grid md:grid-cols-12 gap-8 md:gap-16 items-center relative py-8"
+    >
+      {/* Separador entre módulos (salvo el primero) */}
+      {modIdx > 0 && (
+        <div className="absolute -top-20 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#800a0a]/15 to-transparent pointer-events-none" />
+      )}
+
+      {/* Bloque de Información del Módulo con animación secuencial */}
+      <div className={`flex flex-col gap-4 md:col-span-5 ${mod.invertido ? 'md:order-2 md:items-end md:text-right' : 'md:items-start md:text-left'} items-center text-center transition-all duration-700 ${revelado ? 'animate-fade-in' : 'opacity-0-init translate-y-4'}`}>
+        <div className="flex items-center gap-3">
+          <div className={`p-2.5 rounded-xl flex items-center justify-center shrink-0 ${mod.iconClass}`}>
+            {mod.icono}
+          </div>
+          <h2 className={`text-3xl md:text-4xl font-gothic tracking-widest uppercase ${mod.glowClass}`}>
+            {mod.nombre}
+          </h2>
+        </div>
+        <span className={`text-[10px] md:text-xs font-serif uppercase tracking-widest font-bold block ${mod.taglineClass}`}>
+          {mod.tagline}
+        </span>
+        <p className={`text-sm md:text-base text-slate-400 leading-relaxed font-serif mt-2 max-w-md transition-all duration-700 delay-150 ${revelado ? 'animate-fade-in' : 'opacity-0-init translate-y-4'}`}>
+          {mod.descripcion}
+        </p>
+        <div className={`mt-3 transition-all duration-700 delay-600 ${revelado ? 'animate-fade-in' : 'opacity-0-init translate-y-4'}`}>
+          <button
+            onClick={() => alSeleccionarModulo(mod.id)}
+            className={`font-serif uppercase tracking-widest font-bold px-8 py-3.5 rounded-xl text-[10px] md:text-xs transition-all duration-300 border-2 cursor-pointer ${mod.btnClass}`}
+          >
+            Explorar {mod.nombre}
+          </button>
+        </div>
+      </div>
+
+      {/* Bloque del Ciclo de Procedimiento */}
+      <div className={`w-full md:col-span-7 relative px-4 ${mod.invertido ? 'md:order-1' : ''} overflow-hidden`}>
+        {/* Línea conectora horizontal animada en sintonía con el flujo */}
+        <div className={`hidden md:block absolute top-[24px] left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent ${mod.conectorClass} to-transparent z-0 transition-transform duration-1000 origin-left ${revelado ? 'scale-x-100' : 'scale-x-0'} delay-300`} />
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 relative z-10">
+          {mod.flujo.map((f, idx) => {
+            const delayPaso = idx === 0 ? 'delay-150' : idx === 1 ? 'delay-300' : 'delay-450';
+            return (
+              <div 
+                key={idx} 
+                className={`flex flex-col items-center text-center gap-3 group transition-all duration-700 ${revelado ? 'animate-fade-in' : 'opacity-0-init translate-y-4'} ${delayPaso}`}
+              >
+                <div className={`w-12 h-12 rounded-full bg-[#0c0202] border-2 flex items-center justify-center font-serif font-bold text-sm transition-all duration-300 ${mod.circleClass}`}>
+                  {f.paso}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs md:text-sm font-serif text-slate-300 font-semibold uppercase tracking-wider">
+                    {f.titulo}
+                  </span>
+                  <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-sans px-2">
+                    {f.desc}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+    </div>
+  );
+}
 
 /**
  * Componente de Presentación (Landing Page) para Resonancia.
  * Diseñado con estética premium Gótica-Cyberpunk "libre" (sin tarjetas encerradas).
  * Estructura de dos secciones:
- * 1. Hero (Portada a 100vh con centrado majestuoso y jerarquía tipográfica).
- * 2. Módulos y sus flujos con distribución alternada, iconos y espaciados consistentes.
+ * 1. Hero (Portada a pantalla completa 100vh con centrado majestuoso y jerarquía tipográfica).
+ * 2. Módulos y sus flujos con distribución alternada y revelado con IntersectionObserver.
  */
 export default function Landing({ alSeleccionarModulo }) {
   
@@ -129,75 +233,18 @@ export default function Landing({ alSeleccionarModulo }) {
         </div>
       </section>
 
-      {/* 2. SECCIÓN DE MÓDULOS (Espaciados consistentes y libres de tarjetas) */}
+      {/* 2. SECCIÓN DE MÓDULOS (Con scroll reveal reactivo de IntersectionObserver) */}
       <section 
         id="landing-modules-container" 
         className="w-full max-w-7xl px-6 md:px-12 lg:px-16 py-28 flex flex-col gap-40 relative z-10 overflow-hidden"
       >
         {modulosInfo.map((mod, modIdx) => (
-          <div 
+          <ModuloSeccionReveal 
             key={mod.id} 
-            className="w-full flex flex-col md:grid md:grid-cols-12 gap-8 md:gap-16 items-center relative py-8"
-          >
-            {/* Separador entre módulos (salvo el primero) */}
-            {modIdx > 0 && (
-              <div className="absolute -top-20 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#800a0a]/15 to-transparent pointer-events-none" />
-            )}
-
-            {/* Bloque de Información del Módulo con animación */}
-            <div className={`flex flex-col gap-4 md:col-span-5 ${mod.invertido ? 'md:order-2 md:items-end md:text-right' : 'md:items-start md:text-left'} items-center text-center animate-fade-in opacity-0-init ${mod.delayClass}`}>
-              <div className="flex items-center gap-3">
-                <div className={`p-2.5 rounded-xl flex items-center justify-center shrink-0 ${mod.iconClass}`}>
-                  {mod.icono}
-                </div>
-                <h2 className={`text-3xl md:text-4xl font-gothic tracking-widest uppercase ${mod.glowClass}`}>
-                  {mod.nombre}
-                </h2>
-              </div>
-              <span className={`text-[10px] md:text-xs font-serif uppercase tracking-widest font-bold block ${mod.taglineClass}`}>
-                {mod.tagline}
-              </span>
-              <p className="text-sm md:text-base text-slate-400 leading-relaxed font-serif mt-2 max-w-md">
-                {mod.descripcion}
-              </p>
-              <div className={`mt-3 animate-fade-in opacity-0-init ${mod.delayClass} delay-600`}>
-                <button
-                  onClick={() => alSeleccionarModulo(mod.id)}
-                  className={`font-serif uppercase tracking-widest font-bold px-8 py-3.5 rounded-xl text-[10px] md:text-xs transition-all duration-300 border-2 cursor-pointer ${mod.btnClass}`}
-                >
-                  Explorar {mod.nombre}
-                </button>
-              </div>
-            </div>
-
-            {/* Bloque del Ciclo de Procedimiento */}
-            <div className={`w-full md:col-span-7 relative px-4 ${mod.invertido ? 'md:order-1' : ''} overflow-hidden`}>
-              {/* Línea conectora horizontal solo para desktop */}
-              <div className={`hidden md:block absolute top-[24px] left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent ${mod.conectorClass} to-transparent z-0`} />
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 relative z-10">
-                {mod.flujo.map((f, idx) => {
-                  const delayPaso = idx === 0 ? 'delay-150' : idx === 1 ? 'delay-300' : 'delay-450';
-                  return (
-                    <div key={idx} className={`flex flex-col items-center text-center gap-3 group animate-fade-in opacity-0-init ${mod.delayClass} ${delayPaso}`}>
-                      <div className={`w-12 h-12 rounded-full bg-[#0c0202] border-2 flex items-center justify-center font-serif font-bold text-sm transition-all duration-300 ${mod.circleClass}`}>
-                        {f.paso}
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs md:text-sm font-serif text-slate-300 font-semibold uppercase tracking-wider">
-                          {f.titulo}
-                        </span>
-                        <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-sans px-2">
-                          {f.desc}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-          </div>
+            mod={mod} 
+            modIdx={modIdx} 
+            alSeleccionarModulo={alSeleccionarModulo} 
+          />
         ))}
       </section>
 
