@@ -7,6 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 # Asegurar que el directorio raíz del backend esté en el PYTHONPATH para importes locales consistentes
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# Flag para tracking si los datos se cargaron correctamente en startup
+datos_cargados = False
+
 from cargador_datos import cargar_dataset_maestro
 from servicios.buscador_semantico import obtener_modelo
 from servicios.cliente_http import cerrar_cliente_http
@@ -25,13 +28,16 @@ async def lifespan(app: FastAPI):
     Al apagar:
       3. Cierra el cliente HTTP global reutilizable.
     """
+    global datos_cargados
     try:
         cargar_dataset_maestro()
         print("Servidor: Pre-cargando modelo de embeddings en memoria...")
         obtener_modelo()
         print("Servidor: Modelo de embeddings listo.")
+        datos_cargados = True
     except Exception as e:
         print(f"ERROR CRÍTICO durante el arranque del servidor: {e}")
+        datos_cargados = False
     yield
     # Apagado limpio: cerrar el pool de conexiones HTTP
     await cerrar_cliente_http()
@@ -69,7 +75,14 @@ aplicacion.include_router(enrutador_bitacora)
 def verificar_estado():
     """
     Endpoint simple para verificar que el servidor de Resonancia y todos sus routers estén activos.
+    Valida que los datos estén cargados correctamente.
     """
+    if not datos_cargados:
+        return {
+            "estado": "inactivo_sin_datos",
+            "mensaje": "Servidor activo pero los datos aún no se han cargado. Inténtalo después de un momento.",
+            "modulos": {}
+        }
     return {
         "estado": "activo",
         "mensaje": "Servidor de Resonancia funcionando correctamente",

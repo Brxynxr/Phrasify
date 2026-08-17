@@ -31,7 +31,7 @@
 
 /* Custom Glow Animations and Utility Classes */
 .goth-bg-main {
-  background-image: linear-gradient(to bottom, rgba(12, 2, 2, 0.72), rgba(20, 3, 3, 0.80)), url('/bck.jpg');
+  background-image: linear-gradient(to bottom, rgba(12, 2, 2, 0.72), rgba(20, 3, 3, 0.80)), url('/bck.webp');
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
@@ -75,4 +75,43 @@
 @keyframes blink {
   from, to { border-color: transparent }
   50% { border-color: #e61919; }
+}
+
+@keyframes blink-cursor {
+  from, to { opacity: 0 }
+  50% { opacity: 1 }
+}
+
+.animate-blink {
+  animation: blink-cursor 0.75s step-end infinite;
+}
+
+@keyframes glow-scan {
+  0%, 100% {
+    text-shadow: 0 0 8px rgba(230, 25, 25, 0.8), 0 0 18px rgba(128, 10, 10, 0.5);
+    color: #f1f5f9;
+  }
+  50% {
+    text-shadow: 0 0 16px rgba(154, 77, 255, 0.9), 0 0 28px rgba(154, 77, 255, 0.6);
+    color: #e2e8f0;
+  }
+}
+
+.animate-glow-scan {
+  animation: glow-scan 6s ease-in-out infinite;
+}
+
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up-fade {
+  animation: slide-up-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

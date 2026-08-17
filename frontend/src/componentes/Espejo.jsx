@@ -22,8 +22,10 @@ export default function Espejo() {
     setEstaCargando(true);
     setCitasResultados([]);
 
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
     try {
-      const respuesta = await fetch('http://localhost:8000/espejo/buscar', {
+      const respuesta = await fetch(`${API_URL}/espejo/buscar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,10 +55,10 @@ export default function Espejo() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col gap-8 animate-fade-in">
+    <div className="w-full max-w-4xl mx-auto flex flex-col gap-8 animate-fade-in relative">
       
       {/* Tarjeta de control de búsqueda Gótica */}
-      <div className="goth-card rounded-2xl p-8">
+      <div className="goth-card rounded-2xl p-8 relative overflow-hidden">
         <div className="flex items-center gap-4 mb-6">
           <div className="p-3 bg-[#800a0a]/10 border border-[#800a0a]/40 rounded-xl text-[#e61919] goth-glow-text">
             {/* Icono de Espejo Gótico */}
@@ -118,19 +120,19 @@ export default function Espejo() {
       {!estaCargando && citasResultados.length > 0 && (
         <div className="flex flex-col gap-5">
           <h3 className="text-xs font-serif uppercase tracking-widest text-[#e61919] goth-glow-text px-1">
-            ✠ Pensamientos Reflejados ✠
+            Pensamientos Reflejados
           </h3>
           
           <div className="grid grid-cols-1 gap-5">
             {citasResultados.map((c, indice) => {
-              const afinidadPorcentaje = (c.similitud * 100).toFixed(1);
+              const afinidadEntero = Math.round(c.similitud * 100);
               
               return (
                 <div 
                   key={indice}
-                  className="goth-card rounded-2xl p-6 shadow-lg transition-all duration-300 flex flex-col md:flex-row justify-between gap-4"
+                  className="goth-card rounded-2xl p-6 shadow-lg transition-all duration-300 flex flex-col md:flex-row justify-between gap-4 relative overflow-hidden"
                 >
-                  <div className="flex-1 flex flex-col gap-3">
+                  <div className="flex-1 flex flex-col gap-3 relative z-10">
                     <p className="text-base text-slate-100 italic leading-relaxed font-sans">
                       "{c.frase}"
                     </p>
@@ -153,14 +155,44 @@ export default function Espejo() {
                     </div>
                   </div>
 
-                  {/* Indicador de Afinidad Semántica con círculo brillante */}
-                  <div className="flex flex-col justify-center items-center shrink-0 border-t md:border-t-0 md:border-l border-[#800a0a]/50 pt-3 md:pt-0 md:pl-8 text-center min-w-[120px]">
-                    <span className="text-[10px] text-slate-500 uppercase font-serif tracking-widest mb-1.5 block">
+                  {/* Indicador de Afinidad Semántica con círculo brillante SVG */}
+                  <div className="flex flex-col justify-center items-center shrink-0 border-t md:border-t-0 md:border-l border-[#800a0a]/50 pt-3 md:pt-0 md:pl-8 text-center min-w-[130px] relative z-10">
+                    <span className="text-[10px] text-slate-500 uppercase font-serif tracking-widest mb-3 block">
                       Afinidad
                     </span>
-                    <span className="text-2xl font-extrabold text-[#e61919] goth-glow-text font-mono">
-                      {afinidadPorcentaje}%
-                    </span>
+                    <div className="relative w-16 h-16 flex items-center justify-center">
+                      <svg className="w-full h-full transform -rotate-90">
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="28"
+                          className="stroke-[#0c0202] fill-transparent"
+                          strokeWidth="4"
+                        />
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="28"
+                          className="stroke-[#800a0a]/40 fill-transparent"
+                          strokeWidth="4"
+                        />
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="28"
+                          className="stroke-[#e61919] fill-transparent transition-all duration-1000 ease-out"
+                          strokeWidth="4"
+                          strokeDasharray={2 * Math.PI * 28}
+                          strokeDashoffset={2 * Math.PI * 28 * (1 - c.similitud)}
+                          style={{
+                            filter: 'drop-shadow(0 0 5px rgba(230, 25, 25, 0.85))'
+                          }}
+                        />
+                      </svg>
+                      <span className="absolute text-sm font-extrabold text-[#e61919] goth-glow-text font-mono">
+                        {afinidadEntero}%
+                      </span>
+                    </div>
                   </div>
 
                 </div>
@@ -173,7 +205,7 @@ export default function Espejo() {
       {/* Mensaje Informativo Inicial */}
       {!estaCargando && citasResultados.length === 0 && (
         <div className="text-center py-12 text-slate-600 font-serif tracking-widest text-sm bg-black/40 border border-[#800a0a]/20 rounded-2xl">
-          ✠ Ingresa tu sentir en la barra para reflejarlo en las citas célebres ✠
+          Ingresa tu sentir en la barra para reflejarlo en las citas célebres
         </div>
       )}
 

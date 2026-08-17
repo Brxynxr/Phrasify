@@ -49,8 +49,8 @@ def empaquetar_citas(citas: list, limite_tokens: int) -> dict:
     # 2. Ordenar las citas de mayor a menor tokenización (Decreasing)
     citas_ordenadas = sorted(citas_con_tokens, key=lambda x: x["tokens"], reverse=True)
     
-    # 3. Aplicar First-Fit
-    lotes = [] # Cada lote es: {"tokens_utilizados": int, "citas": list}
+    # 3. Aplicar First-Fit con validación de citas indivisibles
+    lotes = [] # Cada lote es: {"tokens_utilizados": int, "citas": list, "excedido": bool}
     
     for cita in citas_ordenadas:
         tokens_cita = cita["tokens"]
@@ -66,10 +66,19 @@ def empaquetar_citas(citas: list, limite_tokens: int) -> dict:
         
         # Si no cabe en ningún lote existente, crear uno nuevo
         if not colocada:
-            lotes.append({
-                "tokens_utilizados": tokens_cita,
-                "citas": [cita]
-            })
+            # Validar si la cita individual excede el límite de tokens
+            if tokens_cita > limite_tokens:
+                lotes.append({
+                    "tokens_utilizados": tokens_cita,
+                    "citas": [cita],
+                    "excedido": True
+                })
+            else:
+                lotes.append({
+                    "tokens_utilizados": tokens_cita,
+                    "citas": [cita],
+                    "excedido": False
+                })
             
     # 4. Calcular métricas financieras y formatear salida
     coste_fijo_por_lote = 0.005
@@ -86,14 +95,18 @@ def empaquetar_citas(citas: list, limite_tokens: int) -> dict:
     eficiencias = []
     
     for idx, l in enumerate(lotes, 1):
-        # La eficiencia se limita al 100% en caso de que una sola cita supere el límite establecido
-        eficiencia = min((l["tokens_utilizados"] / limite_tokens) * 100, 100.0)
+        # Calcular eficiencia real; si el lote tiene excedido: true, permitir >100%
+        if l.get("excedido", False):
+            eficiencia = (l["tokens_utilizados"] / limite_tokens) * 100
+        else:
+            eficiencia = min((l["tokens_utilizados"] / limite_tokens) * 100, 100.0)
         eficiencias.append(eficiencia)
         
         lotes_resultado.append({
             "lote_id": idx,
             "tokens_utilizados": l["tokens_utilizados"],
             "eficiencia": round(eficiencia, 2),
+            "excedido": l.get("excedido", False),
             "citas": l["citas"]
         })
         
@@ -127,3 +140,7 @@ if __name__ == "__main__":
     print(f"Total de tokens procesados: {resumen['total_tokens']}")
     print(f"Eficiencia promedio de llenado: {resumen['eficiencia_promedio']}%")
     print(f"Coste total estimado: ${resumen['coste_final_total']} USD")
+    # Mostrar información sobre lotes con citas indivisibles
+    lotes_excedidos = [l for l in resultado["lotes"] if l.get("excedido", False)]
+    if lotes_excedidos:
+        print(f"⚠️  Cuidado: {len(lotes_excedidos)} lote(s) contiene(n) cita(s) indivisible(s) que exceden el límite de tokens.")

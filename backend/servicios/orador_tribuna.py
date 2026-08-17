@@ -67,18 +67,18 @@ async def generar_debate_respaldado(pregunta: str, umbral: float = 0.42) -> dict
             "ensayo": ensayo_generado,
             "citas_utilizadas": citas_validas
         }
+        # 6. Guardar en caché y retornar (solo en éxito)
+        _cache_debates[clave_cache] = resultado
+        return resultado
     except Exception as e:
         print(f"Orador Tribuna: Error durante la generación con IA: {e}")
         error_fallback = (
             f"No se pudo generar el ensayo argumentativo debido a un problema con el servicio de IA ({str(e)}). "
             "No obstante, a continuación se muestran las fuentes reales encontradas en nuestro dataset maestro."
         )
-        resultado = {
+        # Retornar fallback SIN almacenar en caché para permitir reintento futuro
+        return {
             "suficientes_fuentes": True,
             "ensayo": error_fallback,
             "citas_utilizadas": citas_validas
         }
-    
-    # 6. Guardar en caché y retornar
-    _cache_debates[clave_cache] = resultado
-    return resultado

@@ -37,8 +37,10 @@ export default function Bitacora() {
     setLotes([]);
     setLoteAbierto(null);
 
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
     try {
-      const respuesta = await fetch('http://localhost:8000/bitacora/optimizar', {
+      const respuesta = await fetch(`${API_URL}/bitacora/optimizar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -70,10 +72,10 @@ export default function Bitacora() {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto flex flex-col gap-8 animate-fade-in">
+    <div className="w-full max-w-5xl mx-auto flex flex-col gap-8 animate-fade-in relative">
       
       {/* Panel Superior: Entrada de Límite de Tokens */}
-      <div className="goth-card rounded-2xl p-8">
+      <div className="goth-card rounded-2xl p-8 relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-[#800a0a]/10 border border-[#800a0a]/40 rounded-xl text-[#e61919] goth-glow-text">
@@ -125,7 +127,7 @@ export default function Bitacora() {
           {/* Columna Izquierda: Listado de Lotes (7 cols) */}
           <div className="lg:col-span-7 flex flex-col gap-4">
             <h3 className="text-xs font-serif font-bold uppercase tracking-widest text-slate-500 px-1">
-              ✠ Lotes Resultantes ({lotes.length}) ✠
+              Lotes Resultantes ({lotes.length})
             </h3>
             
             <div className="flex flex-col gap-3">
@@ -135,12 +137,19 @@ export default function Bitacora() {
                 return (
                   <div 
                     key={lote.lote_id}
-                    className="bg-[#0c0202]/80 border-2 border-[#800a0a]/60 rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:border-[#800a0a]"
+                    className="bg-[#0c0202]/80 border-2 border-[#800a0a]/60 rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:border-[#800a0a] relative overflow-hidden"
                   >
                     {/* Cabecera del Acordeón */}
                     <button 
                       onClick={() => alternarLote(lote.lote_id)}
                       className="w-full flex items-center justify-between p-5 text-left focus:outline-none hover:bg-[#800a0a]/10"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          alternarLote(lote.lote_id);
+                        }
+                      }}
                     >
                       <div className="flex items-center gap-4">
                         <span className="w-8 h-8 rounded-lg bg-[#800a0a]/20 border border-[#800a0a]/50 flex items-center justify-center text-xs font-bold text-[#e61919] font-mono shadow-[0_0_8px_rgba(230,25,25,0.3)]">
@@ -163,7 +172,11 @@ export default function Bitacora() {
                           <div className="w-full h-1.5 bg-[#0c0202] border border-[#800a0a]/30 rounded-full overflow-hidden">
                             <div 
                               className={`h-full rounded-full transition-all duration-500 ${
-                                lote.eficiencia > 90 ? 'bg-[#e61919] shadow-[0_0_8px_#e61919]' : lote.eficiencia > 60 ? 'bg-[#9a4dff] shadow-[0_0_8px_#9a4dff]' : 'bg-amber-600'
+                                lote.excedido || lote.eficiencia >= 85 
+                                  ? 'bg-[#e61919] shadow-[0_0_8px_#e61919]' 
+                                  : lote.eficiencia < 45 
+                                    ? 'bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.6)]' 
+                                    : 'bg-amber-600 shadow-[0_0_8px_rgba(217,119,6,0.5)]'
                               }`}
                               style={{ width: `${lote.eficiencia}%` }}
                             />
@@ -217,7 +230,7 @@ export default function Bitacora() {
           {/* Columna Derecha: Recibo de Facturación Gótico (5 cols) */}
           <div className="lg:col-span-5 flex flex-col gap-4">
             <h3 className="text-xs font-serif font-bold uppercase tracking-widest text-slate-500 px-1">
-              ✠ Recibo de Simulación Gótico ✠
+              Recibo de Simulación Gótico
             </h3>
 
             {/* Recibo Gótico Térmico */}
@@ -279,7 +292,7 @@ export default function Bitacora() {
                   ${resumen.coste_final_total.toFixed(6)} <span className="text-xs text-slate-500 font-normal">USD</span>
                 </span>
                 <span className="block text-[8px] text-slate-600 font-semibold uppercase mt-4 tracking-widest font-serif">
-                  ✠ GRACIAS POR COBRAR CON BITACORA ✠
+                  GRACIAS POR COBRAR CON BITACORA
                 </span>
               </div>
               
@@ -302,7 +315,7 @@ export default function Bitacora() {
       {/* Pantalla Informativa Inicial */}
       {!estaCargando && !resumen && (
         <div className="text-center py-12 text-slate-600 font-serif tracking-widest text-sm bg-black/40 border border-[#800a0a]/20 rounded-2xl">
-          ✠ Ingresa el límite de tokens para calcular el coste del lote gótico ✠
+          Ingresa el límite de tokens para calcular el coste del lote gótico
         </div>
       )}
 
